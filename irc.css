@@ -1,0 +1,16 @@
+body {
+  font-family: Georgia,Palatino,Times,"Times New Roman",serif;
+  font-size:76%;
+  background: #EFEFE7 repeat-x top
+      url(http://clojure.sourceforge.net/sandvox_EarthandSky/verlauf.png);
+  text-align: center;
+}
+
+table {
+  width: 770;
+  background: #fff;
+  margin: 0px auto;
+}
+
+.n { font-weight: bold; text-align: right; }
+td.n { padding: 0 1ex; }

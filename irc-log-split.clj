@@ -95,7 +95,7 @@
   (when dateln
     (recur lastdate
       (let [date-in-str  (second (re-find #"changed ... (.*)" dateln))
-            date         (date-in-fmt.parse date-in-str)
+            date         (date-in-fmt.parse (or date-in-str "Jan 01 1900"))
             date-out-str (date-out-fmt.format date)]
         (if (and lastdate (date.before lastdate))
           (until-next-day text (fn [_]))
@@ -111,4 +111,4 @@
                             (sort (map str (.listFiles (new File "."))))))]
     (when datestr (date-out-fmt.parse datestr))))
 
-(write-days lastdate (line-seq (duck-streams/reader "irc-01.log")))
+(write-days lastdate (line-seq (duck-streams/reader "/home/chouser/irc.log")))

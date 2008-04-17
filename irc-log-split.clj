@@ -17,9 +17,10 @@
                   [i2 & v3] v2
                   tag+attrs (str \< (name i1) (when (map? i2) (astr i2)))
                   content   (if (map? i2) v3 v2)]
-              (cond (seq content) (str tag+attrs ">" (xhtml [content])
-                                       "</" (name i1) \>)
-                    :else         (str tag+attrs " />")))
+              (cond (seq content)  (str tag+attrs ">" (xhtml [content])
+                                        "</" (name i1) \>)
+                    (= :script i1) (str tag+attrs "></script>")
+                    :else          (str tag+attrs " />")))
           (or (vector? v) (seq? v))
             (apply str (map xhtml v))
           :else v)))
@@ -49,7 +50,7 @@
                                   (str text
                                        (when url
                                          (xhtml [:a {:href url} url])))))]
-    linked))
+    (str linked "\n")))
 
 (defn html-header [date]
   (let [datestr (date-in-fmt.format date)]
@@ -61,7 +62,7 @@
     "<body>"
     (xhtml [[:h1 channel " - " datestr]
             [:div {:id "nav-head"} "&nbsp;"]])
-    "<table><tbody valign=\"top\">")))
+    "<table><tbody valign=\"top\">\n")))
 
 (defn html-footer [date]
   (str "</tbody></table>"

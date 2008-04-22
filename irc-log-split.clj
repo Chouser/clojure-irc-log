@@ -1,12 +1,13 @@
-;(set! *warn-on-reflection* true)
+(set! *warn-on-reflection* true)
 
-(load-file "../clojure-contrib/trunk/duck-streams.clj")
+(load-file "../clojure-contrib/duck-streams.clj")
 
 (import '(java.text SimpleDateFormat)
+        '(java.nio  ByteBuffer)
         '(java.io   File))
 
 (def #^SimpleDateFormat date-in-fmt  (new SimpleDateFormat "MMM dd yyyy"))
-(def #^SimpleDateFormat date-out-fmt (new SimpleDateFormat "yyyy-MM-dd"))
+(def #^SimpleDateFormat date-file-fmt (new SimpleDateFormat "yyyy-MM-dd"))
 (def channel "#clojure")
 
 (defn xhtml [v]
@@ -25,31 +26,34 @@
             (apply str (map xhtml v))
           :else v)))
 
+(defn take-ns [n xs]
+  (when (seq xs)
+    (lazy-cons (take n xs) (take-ns n (drop n xs)))))
+
 (defn re-split
-  "Returns a lazy sequence of pairs, [ss m]. Each ss is a substring as
-  split up by the pattern.  Each m is the match (as processed by
-  re-groups) that followed ss in the original string.  If the original
-  string does not end in match, the final m is nil."
-  [#^java.util.regex.Pattern re #^String s]
-    (let [m (re-matcher re s)]
+  [#^java.util.regex.Pattern re #^CharSequence cs]
+    (let [m (re-matcher re cs)]
       ((fn step [prevend]
            (if (.find m)
-             (lazy-cons [(.substring s prevend (.start m)) (re-groups m)]
-                        (step (+ (.start m) (count (.group m)))))
-             (when (< prevend (count s))
-               (list [(.substring s prevend) nil]))))
+             (lazy-cons (.subSequence cs prevend (.start m))
+                        (lazy-cons (re-groups m)
+                                   (step (+ (.start m) (count (.group m))))))
+             (when (< prevend (.length cs))
+               (list (.subSequence cs prevend (.length cs))))))
        0)))
+
 
 (def escape-map {\& "&amp;",  \< "&lt;", \> "&gt;",
                  \" "&quot;", \newline "<br />"})
 (def link-re #"(?:https?://|www\\.)(?:<[^>]*>|[^<>\\s])*(?=(?:&gt;|&lt;|[.\\(\\)\\[\\]])*(?:\\s|$))")
 
 (defn text-to-html [text]
-  (let [escaped   (apply str (map #(or (escape-map %) %) text))
-        linked    (apply str (for [[text url] (re-split link-re escaped)]
-                                  (str text
-                                       (when url
-                                         (xhtml [:a {:href url} url])))))]
+  (let [escaped (apply str (map #(or (escape-map %) %) text))
+        linked  (apply str
+                       (for [[text url] (take-ns 2 (re-split link-re escaped))]
+                            (str text
+                                 (when url
+                                   (xhtml [:a {:href url} url])))))]
     (str linked "\n")))
 
 (defn html-header [date]
@@ -87,7 +91,7 @@
 (defn until-next-day [text func]
   (when text
     (let [[#^String line & more] text]
-      (if (line.startsWith "--- Day changed ")
+      (if (.startsWith line "--- Day changed ")
         text
         (do (func line)
             (recur more func))))))
@@ -96,20 +100,21 @@
   (when dateln
     (recur lastdate
       (let [date-in-str  (second (re-find #"changed ... (.*)" dateln))
-            date         (date-in-fmt.parse (or date-in-str "Jan 01 1900"))
-            date-out-str (date-out-fmt.format date)]
-        (if (and lastdate (date.before lastdate))
+            date         (.parse date-in-fmt (or date-in-str "Jan 01 1900"))
+            date-out-str (.format date-file-fmt date)]
+        (if (and lastdate (.before date lastdate))
           (until-next-day text (fn [_]))
-          (with-open out (duck-streams/writer (str date-out-str ".html"))
-            (out.write (html-header date))
-            (let [more (until-next-day text #(out.write (html-post %)))]
-              (out.write (html-footer date))
+          (with-open #^java.io.PrintWriter out
+                     (duck-streams/writer (str date-out-str ".html"))
+            (.write out #^String (html-header date))
+            (let [more (until-next-day text #(.write out #^String (html-post %)))]
+              (.write out #^String (html-footer date))
               more)))))))
 
 (def lastdate
   (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
                           (reverse
                             (sort (map str (.listFiles (new File "."))))))]
-    (when datestr (date-out-fmt.parse datestr))))
+    (when datestr (.parse date-file-fmt datestr))))
 
-(write-days lastdate (line-seq (duck-streams/reader "/home/chouser/irc.log")))
+(time (write-days lastdate (line-seq (duck-streams/reader "irc-01.log"))))

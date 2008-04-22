@@ -2,7 +2,8 @@
 
 (load-file "../clojure-contrib/duck-streams.clj")
 
-(import '(java.text SimpleDateFormat)
+(import '(java.util Date)
+        '(java.text SimpleDateFormat)
         '(java.nio  ByteBuffer)
         '(java.io   File))
 
@@ -42,6 +43,26 @@
                (list (.subSequence cs prevend (.length cs))))))
        0)))
 
+(defn charseq
+  ([#^ByteBuffer buf] (charseq buf 0 (.limit buf)))
+  ([#^ByteBuffer buf start end]
+      (proxy [CharSequence] []
+          (charAt [i]        (char (.get buf #^Integer (+ start i))))
+          (length []         (- end start))
+          (subSequence [s e] (charseq buf (+ start s) (+ start e)))
+          (toString []       (let [len (- end start)
+                                   ary #^"[B" (make-array (Byte.TYPE) len)] ;"
+                                (.position buf start)
+                                (.get buf ary)
+                                (new String ary "ISO-8859-1"))))))
+
+(defn mmap [f]
+  (let [READ_ONLY (java.nio.channels.FileChannel$MapMode.READ_ONLY)
+        channel (.getChannel (new java.io.FileInputStream f))]
+    (.map channel READ_ONLY 0 (.size channel))))
+
+(defmacro hash-syms [& syms]
+  (cons 'hash-map (mapcat #(list (keyword (name %)) %) syms)))
 
 (def escape-map {\& "&amp;",  \< "&lt;", \> "&gt;",
                  \" "&quot;", \newline "<br />"})
@@ -73,43 +94,45 @@
        (xhtml [:div {:id "nav-foot"} "&nbsp;"])
        "</body></html>\n"))
 
-(defn html-post [line]
+(defn html-post [prevpost post]
+  (let [{timestr :timestr speak :speak emote :emote text :text} post
+        htmltext (text-to-html text)]
+    (xhtml [:tr
+              [:td {:class "t"} [:a {:name timestr} timestr]]
+              [:td {:class "n"} (or speak "*")]
+              [:td {:class "m"} (if speak
+                                  htmltext
+                                  [[:span {:class "n"} emote]
+                                  " " htmltext])]])))
+
+(defn parse-post [line]
   (let [[_ timestr c body] (re-matches #"(..:..) (#\\S+): (.*)" line)]
-    (if (= c channel)
-      (let [[_ speak emote text] (re-matches #"(?:< (\\S+)> | \\* (\\S+))(.*)"
-                                           body)
-           htmltext (text-to-html text)]
-        (xhtml [:tr
-                 [:td {:class "t"} [:a {:name timestr} timestr]]
-                 [:td {:class "n"} (or speak "*")]
-                 [:td {:class "m"} (if speak
-                                     htmltext
-                                     [[:span {:class "n"} emote]
-                                      " " htmltext])]]))
-      "")))
+    (when (= c channel)
+      (let [[_ speak emote text]
+              (re-matches #"(?:< (\\S+)> | \\* (\\S+))(.*)" body)]
+        (hash-syms timestr speak emote text)))))
 
-(defn until-next-day [text func]
-  (when text
-    (let [[#^String line & more] text]
-      (if (.startsWith line "--- Day changed ")
-        text
-        (do (func line)
-            (recur more func))))))
+(defn split-days [cs]
+  (let [#^SimpleDateFormat date-in-fmt (new SimpleDateFormat "MMM dd yyyy")]
+    (for [[[_ datestr] body]
+            (take-ns 2 (rest (re-split #"--- Day changed ... (.*)" cs)))]
+      [(.parse date-in-fmt datestr) (re-seq #".+" body)])))
 
-(defn write-days [lastdate [dateln & text]]
-  (when dateln
-    (recur lastdate
-      (let [date-in-str  (second (re-find #"changed ... (.*)" dateln))
-            date         (.parse date-in-fmt (or date-in-str "Jan 01 1900"))
-            date-out-str (.format date-file-fmt date)]
-        (if (and lastdate (.before date lastdate))
-          (until-next-day text (fn [_]))
-          (with-open #^java.io.PrintWriter out
-                     (duck-streams/writer (str date-out-str ".html"))
-            (.write out #^String (html-header date))
-            (let [more (until-next-day text #(.write out #^String (html-post %)))]
-              (.write out #^String (html-footer date))
-              more)))))))
+(defn skip-until [#^Date lastdate days]
+  (if lastdate
+    (filter (fn [[date lines]] (when-not (.before lastdate date))) days)
+    days))
+
+(defn write-days [days]
+  (doseq [date lines] days
+    (let [datestr (.format date-file-fmt date)
+          filename (str datestr ".html")]
+      (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
+        (.write out #^String (html-header date))
+        (let [goodposts (filter identity (map parse-post lines))]
+          (doseq string (map html-post (cons nil goodposts) goodposts)
+            (.write out #^String string)))
+        (.write out #^String (html-footer date))))))
 
 (def lastdate
   (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
@@ -117,4 +140,7 @@
                             (sort (map str (.listFiles (new File "."))))))]
     (when datestr (.parse date-file-fmt datestr))))
 
-(time (write-days lastdate (line-seq (duck-streams/reader "irc-01.log"))))
+(time
+  (write-days
+    (skip-until lastdate (split-days (charseq (mmap "irc-01.log"))))))
+

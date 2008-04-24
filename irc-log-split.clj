@@ -94,29 +94,40 @@
        (xhtml [:div {:id "nav-foot"} "&nbsp;"])
        "</body></html>\n"))
 
-(defn html-post [prevpost post]
-  (let [{timestr :timestr speak :speak emote :emote text :text} post
-        htmltext (text-to-html text)]
-    (xhtml [:tr
-              [:td {:class "t"} [:a {:name timestr} timestr]]
-              [:td {:class "n"} (or speak "*")]
-              [:td {:class "m"} (if speak
-                                  htmltext
-                                  [[:span {:class "n"} emote]
-                                  " " htmltext])]])))
+(defn minutes [timestr]
+  (Integer.parseInt (second (re-seq #"\\d+" timestr))))
 
-(defn parse-post [line]
+(defn html-post [prevpost {:keys [timestr speak emote text imc]}]
+  (let [htmltext   (text-to-html text)
+        prevminute (if-let ptime (:timestr prevpost) (minutes ptime) 99)]
+    (xhtml
+      [:tr
+        [:td {:class "t"}
+             [:a {:class (when (<= 0 (- (minutes timestr) prevminute) 5) "h")
+                  :name (str timestr (when (< 0 imc) (char (+ imc 96))))}
+                 timestr]]
+        [:td {:class "n"} (or (if (= speak (:speak prevpost)) "" speak) "*")]
+        [:td {:class "m"} (if speak
+                            htmltext
+                            [[:span {:class "n"} emote] " " htmltext])]])))
+
+(defn parse-post [prevs line]
   (let [[_ timestr c body] (re-matches #"(..:..) (#\\S+): (.*)" line)]
-    (when (= c channel)
-      (let [[_ speak emote text]
-              (re-matches #"(?:< (\\S+)> | \\* (\\S+))(.*)" body)]
-        (hash-syms timestr speak emote text)))))
+    (if (= c channel)
+      (conj prevs
+            (let [[_ speak emote text]
+                    (re-matches #"(?:< (\\S+)> | \\* (\\S+))(.*)" body)
+                  imc (let [p (peek prevs)]
+                        (if (= timestr (:timestr p)) (+ 1 (:imc p)) 0))
+                  offset (count prevs)]
+              (hash-syms timestr speak emote text offset imc)))
+      prevs)))
 
 (defn split-days [cs]
   (let [#^SimpleDateFormat date-in-fmt (new SimpleDateFormat "MMM dd yyyy")]
     (for [[[_ datestr] body]
             (take-ns 2 (rest (re-split #"--- Day changed ... (.*)" cs)))]
-      [(.parse date-in-fmt datestr) (re-seq #".+" body)])))
+      [(.parse date-in-fmt datestr) (re-seq #".+" (str body))])))
 
 (defn skip-until [#^Date lastdate days]
   (if lastdate
@@ -129,8 +140,8 @@
           filename (str datestr ".html")]
       (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
         (.write out #^String (html-header date))
-        (let [goodposts (filter identity (map parse-post lines))]
-          (doseq string (map html-post (cons nil goodposts) goodposts)
+        (let [goodposts (reduce parse-post [] lines)]
+          (doseq string (map html-post (cons nil (seq goodposts)) goodposts)
             (.write out #^String string)))
         (.write out #^String (html-footer date))))))
 

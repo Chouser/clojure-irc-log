@@ -14,3 +14,6 @@ table {
 
 .n { font-weight: bold; text-align: right; }
 td.n { padding: 0 1ex; }
+
+.h { color: #aaa; visibility: hidden; }
+td:hover .h { visibility: visible; }

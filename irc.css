@@ -35,7 +35,7 @@ b {
   text-align: right;
 }
 
-#menu {
+dl {
   float: right;
   background: #ddd;
   margin: 0 1em;
@@ -44,30 +44,28 @@ b {
   padding-bottom: 1em;
 }
 
-#menu li {
-  list-style-type: none;
-}
-
-h4 {
+dt {
+  font-weight: bold;
   background: #9a3;
-  margin-top: 0;
-  padding: 0 1em;
+  margin-bottom: 0.5em;
+  padding: 0.2em 1em;
 }
 
-#menu a { padding: 0 1em; }
+dd { margin: 0; }
+dd a { padding: 0 1em; }
 em { font-style: normal; font-weight: bold; }
 a { color: #aaa; visibility: hidden; }
 p:hover a { visibility: visible; }
 a:target, a.nh { color: #000; visibility: visible; }
 
-a.nm, #menu a, .nav a {
+a.nm, dd a, .nav a {
   color: #00f;
   visibility: visible;
   float: none;
   margin-left: 0;
 }
 
-a.nm:visited, #menu a:visited, .nav a { color: purple; }
+a.nm:visited, dd a:visited, .nav a { color: purple; }
 .nav, .foot { text-align: center; font-style: italic; }
 .nav a { padding: 0 1em; }
 .nav a.i { color: #555; }

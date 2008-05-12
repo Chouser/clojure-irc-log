@@ -93,15 +93,15 @@
          (xhtml [:h1 channel " - " datestr])
          "<div id=\"narrow\">"
           (xhtml [
-            [:ul {:id "menu"}
-              [:li [:h4 "Related links"]]
-              [:li [:a {:href "http://clojure.org/"} "Main Clojure site"]]
-              [:li [:a {:href "http://groups.google.com/group/clojure"}
+            [:dl
+              [:dt "Related links"]
+              [:dd [:a {:href "http://clojure.org/"} "Main Clojure site"]]
+              [:dd [:a {:href "http://groups.google.com/group/clojure"}
                        "Google Group"]]
-              [:li [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
-              [:li [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
+              [:dd [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
+              [:dd [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
                        "Wiki"]]
-              [:li [:a {:href "/date/"} "List of all logged dates"]]]
+              [:dd [:a {:href "/date/"} "List of all logged dates"]]]
             [:div {:id "nav-head" :class "nav"}
                   [:noscript "Turn on JavaScript for date navigation."]
                   "&nbsp;"]])

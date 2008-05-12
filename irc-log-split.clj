@@ -1,4 +1,4 @@
-(set! *warn-on-reflection* true)
+;(set! *warn-on-reflection* true)
 
 (load-file "../clojure-contrib/duck-streams.clj")
 
@@ -74,25 +74,43 @@
                        (for [[text url] (take-ns 2 (re-split link-re escaped))]
                             (str text
                                  (when url
-                                   (xhtml [:a {:href url} url])))))]
+                                   (xhtml [:a {:href url :class "nm"} url])))))]
     (str linked "\n")))
 
 (defn html-header [date]
   (let [datestr (date-in-fmt.format date)]
-  (str "<html>"
-    (xhtml
-      [:head [:title channel " - " datestr]
-             [:link   {:type "text/css" :href "irc.css" :rel "stylesheet"}]
-             [:script {:type "text/javascript" :src "irc.js"}]])
-    "<body>"
-    (xhtml [[:h1 channel " - " datestr]
-            [:div {:id "nav-head"} "&nbsp;"]])
-    "<table><tbody valign=\"top\">\n")))
+    (str "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+         "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+         "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+         (xhtml
+           [:head [:title channel " - " datestr]
+                  [:meta {:http-equiv "Content-Type"
+                          :content "application/xhtml+xml; charset=UTF-8"}]
+                  [:link   {:type "text/css" :href "/irc.css"
+                            :rel "stylesheet"}]
+                  [:script {:type "text/javascript" :src "/irc.js"}]])
+         "<body>"
+         (xhtml [:h1 channel " - " datestr])
+         "<div id=\"narrow\">"
+          (xhtml [
+            [:ul {:id "menu"}
+              [:li [:h4 "Related links"]]
+              [:li [:a {:href "http://clojure.org/"} "Main Clojure site"]]
+              [:li [:a {:href "http://groups.google.com/group/clojure"}
+                       "Google Group"]]
+              [:li [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
+              [:li [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
+                       "Wiki"]]
+              [:li [:a {:href "/date/"} "List of all logged dates"]]]
+            [:div {:id "nav-head" :class "nav"}
+                  [:noscript "Turn on JavaScript for date navigation."]
+                  "&nbsp;"]])
+          "<div id=\"main\">")))
 
 (defn html-footer [date]
-  (str "</tbody></table>"
-       (xhtml [:div {:id "nav-foot"} "&nbsp;"])
-       "</body></html>\n"))
+  (str "</div>"
+       (xhtml [:div {:id "nav-foot" :class "nav"} "&nbsp;"])
+       "</div></body></html>\n"))
 
 (defn minutes [timestr]
   (Integer.parseInt (second (re-seq #"\\d+" timestr))))
@@ -101,15 +119,14 @@
   (let [htmltext   (text-to-html text)
         prevminute (if-let ptime (:timestr prevpost) (minutes ptime) 99)]
     (xhtml
-      [:tr
-        [:td {:class "t"}
-             [:a {:class (when (<= 0 (- (minutes timestr) prevminute) 5) "h")
-                  :name (str timestr (when (< 0 imc) (char (+ imc 96))))}
-                 timestr]]
-        [:td {:class "n"} (or (if (= speak (:speak prevpost)) "" speak) "*")]
-        [:td {:class "m"} (if speak
-                            htmltext
-                            [[:span {:class "n"} emote] " " htmltext])]])))
+      [:p
+        [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
+              (if (<= 0 (- (minutes timestr) prevminute) 5) nil {:class "nh"}))
+            (re-find #"[1-9].*" timestr)]
+        " "
+        (when (or emote (not= speak (:speak prevpost)))
+          [:b (if emote "*" (str speak ":")) " "])
+        (if speak htmltext [[:em emote] " " htmltext])])))
 
 (defn parse-post [prevs line]
   (let [[_ timestr c body] (re-matches #"(..:..) (#\\S+): (.*)" line)]
@@ -131,27 +148,29 @@
 
 (defn skip-until [#^Date lastdate days]
   (if lastdate
-    (filter (fn [[date lines]] (when-not (.before lastdate date))) days)
+    (filter (fn [[date lines]] (not (.before date lastdate))) days)
     days))
 
-(defn write-days [days]
-  (doseq [date lines] days
-    (let [datestr (.format date-file-fmt date)
-          filename (str datestr ".html")]
-      (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
-        (.write out #^String (html-header date))
-        (let [goodposts (reduce parse-post [] lines)]
-          (doseq string (map html-post (cons nil (seq goodposts)) goodposts)
-            (.write out #^String string)))
-        (.write out #^String (html-footer date))))))
+(defn write-day [date lines]
+  (let [datestr (.format date-file-fmt date)
+        filename (str "date/" datestr ".html")]
+    (.mkdir (new File "date"))
+    (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
+      (.write out #^String (html-header date))
+      (let [goodposts (reduce parse-post [] lines)]
+        (doseq string (map html-post (cons nil (seq goodposts)) goodposts)
+          (.write out #^String string)))
+      (.write out #^String (html-footer date)))
+    filename))
 
-(def lastdate
-  (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
-                          (reverse
-                            (sort (map str (.listFiles (new File "."))))))]
-    (when datestr (.parse date-file-fmt datestr))))
 
-(time
-  (write-days
-    (skip-until lastdate (split-days (charseq (mmap "irc-01.log"))))))
-
+(let [lastdate
+       (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
+                               (reverse
+                                 (sort (map str (.listFiles (new File "."))))))]
+         (when datestr (.parse date-file-fmt datestr)))
+      days
+       (skip-until lastdate (split-days (charseq (mmap "irc-01.log"))))
+      lastfile
+       (reduce (fn [prev [date lines]] (write-day date lines)) nil days)]
+  (.. Runtime (getRuntime) (exec (str "ln -sf " lastfile " index.html"))))

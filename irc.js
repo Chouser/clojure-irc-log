@@ -20,10 +20,10 @@ function onload() {
     }
   }
   if(req) {
+    var urlm = document.location.href.match(/(\d\d\d\d-\d\d-\d\d)\.html/);
+    var thisdate = urlm && urlm[1];
     req.onreadystatechange = function() {
       if( req.readyState == 4 ) {
-        var thisdate = document.location.href.match(
-                        /(\d\d\d\d-\d\d-\d\d)\.html/)[1];
         var thisdateidx = -1;
         var datehash = {};
         var datelist = [];
@@ -39,37 +39,32 @@ function onload() {
         var lastdate  = datelist[ datelist.length - 1 ];
         var html = [];
 
-        if( thisdateidx > -1 ) {
-          if( thisdateidx > 0 ) {
-            html.push( '<a href="', datelist[ thisdateidx - 1 ], '.html">&lt; ',
-                datelist[ thisdateidx - 1 ], '</a>' );
-          }
-          else {
-            html.push( '<span class="i">At earliest date &gt;&gt;</span>' );
-          }
-
-          html.push( ' &nbsp; &nbsp; &nbsp; ' );
-
-          if( thisdateidx < datelist.length - 1 ) {
-            html.push( '<a href="', datelist[ thisdateidx + 1 ], '.html">',
-                datelist[ thisdateidx + 1 ], ' &gt;</a>' );
-          }
-          else {
-            html.push( '<span class="i">At lastest date &gt;&gt;</span>' );
-          }
-
-          html.push( ' &nbsp; ' );
+        if( thisdateidx < 0 ) {
+          thisdateidx = datelist.length - 1;
         }
-        if( thisdateidx < datelist.length - 2 ) {
-          html.push( '<a href="', lastdate, '.html">',
-              lastdate, ' &gt;&gt;</a>' );
+
+        function pushlink( idx, text ) {
+          if( idx < 0 || idx > datelist.length - 1 || thisdateidx == idx )
+            html.push('<a class="i">');
+          else
+            html.push('<a href="/date/', datelist[ idx ], '.html"',
+                ' title="', datelist[ idx ], '">');
+          html.push( text, '</a>' );
         }
+
+        pushlink( 0, "« Earliest" );
+        pushlink( thisdateidx - 1, "‹ Previous" );
+        pushlink( thisdateidx + 1, "Next ›" );
+        pushlink( datelist.length - 1, "Latest »" );
+
+        html.push( '&nbsp;' );
+
         var htmlstr = html.join('');
         nav.innerHTML = htmlstr;
         document.getElementById('nav-foot').innerHTML = htmlstr;
       }
     };
-    req.open("GET", "./", true);
+    req.open("GET", "/date/", true);
     req.send("");
   }
   else {

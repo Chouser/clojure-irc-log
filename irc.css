@@ -1,19 +1,73 @@
 body {
   font-family: Georgia,Palatino,Times,"Times New Roman",serif;
-  font-size:76%;
+  font-size: 9pt;
   background: #EFEFE7 repeat-x top
       url(http://clojure.sourceforge.net/sandvox_EarthandSky/verlauf.png);
   text-align: center;
 }
 
-table {
-  width: 770;
-  background: #fff;
+#narrow {
+  width: 50em;
   margin: 0px auto;
+  text-align: left;
 }
 
-.n { font-weight: bold; text-align: right; }
-td.n { padding: 0 1ex; }
+#main {
+  background: #fff;
+}
 
-.h { color: #aaa; visibility: hidden; }
-td:hover .h { visibility: visible; }
+p {
+  padding-left: 10em;
+  padding-right: 13em;
+  margin: 1ex 0;
+}
+
+a {
+  float: left;
+  margin-left: -10em;
+}
+
+b {
+  float: left;
+  margin-left: -7.5em;
+  width: 7em;
+  font-weight: bold;
+  text-align: right;
+}
+
+#menu {
+  float: right;
+  background: #ddd;
+  margin: 0 1em;
+  margin-top: -1em;
+  padding: 0;
+  padding-bottom: 1em;
+}
+
+#menu li {
+  list-style-type: none;
+}
+
+h4 {
+  background: #9a3;
+  margin-top: 0;
+  padding: 0 1em;
+}
+
+#menu a { padding: 0 1em; }
+em { font-style: normal; font-weight: bold; }
+a { color: #aaa; visibility: hidden; }
+p:hover a { visibility: visible; }
+a:target, a.nh { color: #000; visibility: visible; }
+
+a.nm, #menu a, .nav a {
+  color: #00f;
+  visibility: visible;
+  float: none;
+  margin-left: 0;
+}
+
+a.nm:visited, #menu a:visited, .nav a { color: purple; }
+.nav { text-align: center; font-style: italic; }
+.nav a { padding: 0 1em; }
+.nav a.i { color: #555; }

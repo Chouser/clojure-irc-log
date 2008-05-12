@@ -109,7 +109,10 @@
 
 (defn html-footer [date]
   (str "</div>"
-       (xhtml [:div {:id "nav-foot" :class "nav"} "&nbsp;"])
+       (xhtml [
+         [:div {:id "nav-foot" :class "nav"} "&nbsp;"]
+         [:div {:class "foot"} "Logging service provided by "
+               [:a {:class "nm" :href "http://n01se.net/"} "n01se.net"]]])
        "</div></body></html>\n"))
 
 (defn minutes [timestr]

@@ -68,6 +68,6 @@ a.nm, #menu a, .nav a {
 }
 
 a.nm:visited, #menu a:visited, .nav a { color: purple; }
-.nav { text-align: center; font-style: italic; }
+.nav, .foot { text-align: center; font-style: italic; }
 .nav a { padding: 0 1em; }
 .nav a.i { color: #555; }

@@ -45,11 +45,11 @@ function onload() {
 
         function pushlink( idx, text ) {
           if( idx < 0 || idx > datelist.length - 1 || thisdateidx == idx )
-            html.push('<a class="i">');
+            html.push(' <a class="i">');
           else
             html.push('<a href="/date/', datelist[ idx ], '.html"',
                 ' title="', datelist[ idx ], '">');
-          html.push( text, '</a>' );
+          html.push( text, '</a> ' );
         }
 
         pushlink( 0, "« Earliest" );

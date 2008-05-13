@@ -69,3 +69,6 @@ a.nm:visited, dd a:visited, .nav a { color: purple; }
 .nav, .foot { text-align: center; font-style: italic; }
 .nav a { padding: 0 1em; }
 .nav a.i { color: #555; }
+
+/* opera compatibility for <wbr> */
+wbr:after { content: "\00200B" }

@@ -67,6 +67,7 @@
 (def escape-map {\& "&amp;",  \< "&lt;", \> "&gt;",
                  \" "&quot;", \newline "<br />"})
 (def link-re #"(?:https?://|www\\.)(?:<[^>]*>|[^<>\\s])*(?=(?:&gt;|&lt;|[.\\(\\)\\[\\]])*(?:\\s|$))")
+(def wrap-re #"(?:<[^>]*>|&[^;]*;|[^/&?]){1,50}[/&?]?")
 
 (defn text-to-html [text]
   (let [escaped (apply str (map #(or (escape-map %) %) text))
@@ -74,7 +75,10 @@
                        (for [[text url] (take-ns 2 (re-split link-re escaped))]
                             (str text
                                  (when url
-                                   (xhtml [:a {:href url :class "nm"} url])))))]
+                                   (let [urltext (reduce #(str %1 "<wbr />" %2)
+                                                         (re-seq wrap-re url))]
+                                     (xhtml [:a {:href url :class "nm"}
+                                                urltext]))))))]
     (str linked "\n")))
 
 (defn html-header [date]

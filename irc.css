@@ -29,10 +29,11 @@ a {
 
 b {
   float: left;
-  margin-left: -7.5em;
-  width: 7em;
+  margin-left: -6.8em;
+  width: 6.3em;
   font-weight: bold;
   text-align: right;
+  overflow: hidden;
 }
 
 dl {

@@ -173,8 +173,8 @@
 
 (let [lastdate
        (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
-                               (reverse
-                                 (sort (map str (.listFiles (new File "."))))))]
+                               (-> (map str (.listFiles (new File "date")))
+                                   sort reverse))]
          (when datestr (.parse date-file-fmt datestr)))
       days
        (skip-until lastdate (split-days (charseq (mmap "irc-01.log"))))

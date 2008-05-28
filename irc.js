@@ -1,4 +1,22 @@
 function onload() {
+  var m = /^#(.*)-(\d+\/)?(.*)$/.exec( document.location.hash );
+  if( m ) {
+    var p = document.getElementsByTagName('p');
+    var hide = true;
+    var a, lastnick;
+    for( var i = 0; i < p.length; ++i ) {
+      a = p[i].getElementsByTagName('a')[0];
+      lastnick = p[i].getElementsByTagName('b')[0] || lastnick;
+      if( a.name == m[1] ) {
+        hide = false;
+        a.className = 'nh';
+        p[i].insertBefore( lastnick, a.nextSibling );
+      }
+      if( hide ) { p[i].style.display = 'none'; }
+      if( a.name == m[3] ) { hide = true; }
+    }
+  }
+
   var nav = document.getElementById('nav-head');
 
   var req = false;

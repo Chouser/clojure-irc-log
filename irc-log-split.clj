@@ -1,14 +1,16 @@
 ;(set! *warn-on-reflection* true)
 
-(load-file "../clojure-contrib/duck-streams.clj")
+(load-file "../clojure-contrib/lib.clj")
+(refer 'lib)
+(use duck-streams)
 
 (import '(java.util Date)
         '(java.text SimpleDateFormat)
         '(java.nio  ByteBuffer)
         '(java.io   File))
 
-(def #^SimpleDateFormat date-in-fmt  (new SimpleDateFormat "MMM dd yyyy"))
-(def #^SimpleDateFormat date-file-fmt (new SimpleDateFormat "yyyy-MM-dd"))
+(def #^SimpleDateFormat date-in-fmt  (SimpleDateFormat. "MMM dd yyyy"))
+(def #^SimpleDateFormat date-file-fmt (SimpleDateFormat. "yyyy-MM-dd"))
 (def channel "#clojure")
 
 (defn xhtml [v]
@@ -51,14 +53,14 @@
           (length []         (- end start))
           (subSequence [s e] (charseq buf (+ start s) (+ start e)))
           (toString []       (let [len (- end start)
-                                   ary #^"[B" (make-array (Byte.TYPE) len)] ;"
+                                   ary #^"[B" (make-array Byte/TYPE len)]
                                 (.position buf start)
                                 (.get buf ary)
-                                (new String ary "ISO-8859-1"))))))
+                                (String. ary "ISO-8859-1"))))))
 
 (defn mmap [f]
   (let [READ_ONLY (java.nio.channels.FileChannel$MapMode.READ_ONLY)
-        channel (.getChannel (new java.io.FileInputStream f))]
+        channel (.getChannel (java.io.FileInputStream. f))]
     (.map channel READ_ONLY 0 (.size channel))))
 
 (defmacro hash-syms [& syms]
@@ -148,7 +150,7 @@
       prevs)))
 
 (defn split-days [cs]
-  (let [#^SimpleDateFormat date-in-fmt (new SimpleDateFormat "MMM dd yyyy")]
+  (let [#^SimpleDateFormat date-in-fmt (SimpleDateFormat. "MMM dd yyyy")]
     (for [[[_ datestr] body]
             (take-ns 2 (rest (re-split #"--- Day changed ... (.*)" cs)))]
       [(.parse date-in-fmt datestr) (re-seq #".+" (str body))])))
@@ -161,7 +163,7 @@
 (defn write-day [date lines]
   (let [datestr (.format date-file-fmt date)
         filename (str "date/" datestr ".html")]
-    (.mkdir (new File "date"))
+    (.mkdir (File. "date"))
     (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
       (.write out #^String (html-header date))
       (let [goodposts (reduce parse-post [] lines)]
@@ -173,7 +175,7 @@
 
 (let [lastdate
        (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
-                               (-> (map str (.listFiles (new File "date")))
+                               (-> (map str (.listFiles (File. "date")))
                                    sort reverse))]
          (when datestr (.parse date-file-fmt datestr)))
       days

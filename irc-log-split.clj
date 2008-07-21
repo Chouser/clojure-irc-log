@@ -58,7 +58,7 @@
                                 (String. ary "ISO-8859-1"))))))
 
 (defn mmap [f]
-  (let [READ_ONLY (java.nio.channels.FileChannel$MapMode.READ_ONLY)
+  (let [READ_ONLY (java.nio.channels.FileChannel$MapMode/READ_ONLY)
         channel (.getChannel (java.io.FileInputStream. f))]
     (.map channel READ_ONLY 0 (.size channel))))
 
@@ -83,7 +83,7 @@
     (str linked "\n")))
 
 (defn html-header [date]
-  (let [datestr (date-in-fmt.format date)]
+  (let [datestr (.format date-in-fmt date)]
     (str "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
          "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
          "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
@@ -121,7 +121,7 @@
        "</div></body></html>\n"))
 
 (defn minutes [timestr]
-  (Integer.parseInt (second (re-seq #"\\d+" timestr))))
+  (Integer/parseInt (second (re-seq #"\\d+" timestr))))
 
 (defn html-post [prevpost {:keys [timestr speak emote text imc]}]
   (let [htmltext   (text-to-html text)

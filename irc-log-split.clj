@@ -1,8 +1,7 @@
 ;(set! *warn-on-reflection* true)
 
-(load-file "../clojure-contrib/lib.clj")
-(refer 'lib)
-(use duck-streams)
+(clojure.lang.RT/loadResourceScript "lib.clj")
+(lib/use duck-streams)
 
 (import '(java.util Date)
         '(java.text SimpleDateFormat)

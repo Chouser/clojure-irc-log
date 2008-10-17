@@ -159,7 +159,7 @@
         goodposts (reduce parse-post [] lines)]
     (.mkdir (File. "date"))
     (with-open #^java.io.PrintWriter out (ds/writer filename)
-      (println "Writing" filename)
+      ;(println "Writing" filename)
       (.write out #^String (html-header date))
       (doseq string (map html-post (cons nil goodposts) goodposts)
         (.write out #^String string))

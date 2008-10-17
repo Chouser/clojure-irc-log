@@ -1,8 +1,7 @@
 body {
   font-family: Georgia,Palatino,Times,"Times New Roman",serif;
   font-size: 9pt;
-  background: #EFEFE7 repeat-x top
-      url(http://clojure.sourceforge.net/sandvox_EarthandSky/verlauf.png);
+  background: #E3E3E3;
   text-align: center;
 }
 
@@ -13,7 +12,8 @@ body {
 }
 
 #main {
-  background: #fff;
+  background: #FFFFFF repeat-y right
+    url(http://clojure.org/space/showimage/content-background.gif);
 }
 
 p {
@@ -37,19 +37,14 @@ b {
 }
 
 dl {
-  float: right;
-  background: #ddd;
   margin: 0 1em;
   margin-top: -1em;
-  padding: 0;
-  padding-bottom: 1em;
-}
-
-dt {
-  font-weight: bold;
-  background: #9a3;
-  margin-bottom: 0.5em;
-  padding: 0.2em 1em;
+  background: #E4EAF7 url(http://clojure.org/space/showimage/resources-background.gif) repeat-y scroll 0% 0%;
+  border-top: 1px solid #ABC4E2;
+  border-bottom: 1px solid #ABC4E2;
+  float: right;
+  padding: 5px 0pt;
+  width: 234px;
 }
 
 dd { margin: 0; }
@@ -73,3 +68,8 @@ a.nm:visited, dd a:visited, .nav a { color: purple; }
 
 /* opera compatibility for <wbr> */
 wbr:after { content: "\00200B" }
+
+dt { margin: 0 0 1em 1em; }
+#q { width: 19em; }
+#sa { padding: 0; }
+#q, #sa { font-size: 80%; }

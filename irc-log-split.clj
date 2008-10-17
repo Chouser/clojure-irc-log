@@ -1,12 +1,13 @@
+(ns irc-log
+    (:require (clojure.contrib [duck-streams :as ds]))
+    (:use (clojure.contrib [mmap :only (mmap)]
+                           [str-utils :only (re-partition)]))
+    (:import (java.util Date)
+             (java.text SimpleDateFormat)
+             (java.nio  ByteBuffer)
+             (java.io   File)))
+
 ;(set! *warn-on-reflection* true)
-
-(clojure.lang.RT/loadResourceScript "lib.clj")
-(lib/use duck-streams)
-
-(import '(java.util Date)
-        '(java.text SimpleDateFormat)
-        '(java.nio  ByteBuffer)
-        '(java.io   File))
 
 (def #^SimpleDateFormat date-in-fmt  (SimpleDateFormat. "MMM dd yyyy"))
 (def #^SimpleDateFormat date-file-fmt (SimpleDateFormat. "yyyy-MM-dd"))
@@ -28,22 +29,6 @@
             (apply str (map xhtml v))
           :else v)))
 
-(defn take-ns [n xs]
-  (when (seq xs)
-    (lazy-cons (take n xs) (take-ns n (drop n xs)))))
-
-(defn re-split
-  [#^java.util.regex.Pattern re #^CharSequence cs]
-    (let [m (re-matcher re cs)]
-      ((fn step [prevend]
-           (if (.find m)
-             (lazy-cons (.subSequence cs prevend (.start m))
-                        (lazy-cons (re-groups m)
-                                   (step (+ (.start m) (count (.group m))))))
-             (when (< prevend (.length cs))
-               (list (.subSequence cs prevend (.length cs))))))
-       0)))
-
 (defn charseq
   ([#^ByteBuffer buf] (charseq buf 0 (.limit buf)))
   ([#^ByteBuffer buf start end]
@@ -57,29 +42,27 @@
                                 (.get buf ary)
                                 (String. ary "ISO-8859-1"))))))
 
-(defn mmap [f]
-  (let [READ_ONLY (java.nio.channels.FileChannel$MapMode/READ_ONLY)
-        channel (.getChannel (java.io.FileInputStream. f))]
-    (.map channel READ_ONLY 0 (.size channel))))
-
 (defmacro hash-syms [& syms]
   (cons 'hash-map (mapcat #(list (keyword (name %)) %) syms)))
 
 (def escape-map {\& "&amp;",  \< "&lt;", \> "&gt;",
                  \" "&quot;", \newline "<br />"})
-(def link-re #"(?:https?://|www\\.)(?:<[^>]*>|[^<>\\s])*(?=(?:&gt;|&lt;|[.\\(\\)\\[\\]])*(?:\\s|$))")
-(def wrap-re #"(?:<[^>]*>|&[^;]*;|[^/&?]){1,50}[/&?]?")
+(def link-re #"(?:https?://|www\.)(?:<[^>]*>|[^<>\s])*(?=(?:&gt;|&lt;|[.()\[\]])*(?:\s|$))")
+(def wrap-re #"(?:<[^>]*>|&[^;]*;|[^/&?]){1,50}[/&?]*")
 
 (defn text-to-html [text]
   (let [escaped (apply str (map #(or (escape-map %) %) text))
         linked  (apply str
-                       (for [[text url] (take-ns 2 (re-split link-re escaped))]
-                            (str text
-                                 (when url
-                                   (let [urltext (reduce #(str %1 "<wbr />" %2)
-                                                         (re-seq wrap-re url))]
-                                     (xhtml [:a {:href url :class "nm"}
-                                                urltext]))))))]
+                       (for [[text url]
+                             (partition 2 (lazy-cat
+                                            (re-partition link-re escaped)
+                                            [nil]))]
+                         (str text
+                              (when url
+                                (let [urltext (reduce #(str %1 "<wbr />" %2)
+                                                      (re-seq wrap-re url))]
+                                  (xhtml [:a {:href url :class "nm"}
+                                          urltext]))))))]
     (str linked "\n")))
 
 (defn html-header [date]
@@ -99,14 +82,23 @@
          "<div id=\"narrow\">"
           (xhtml [
             [:dl
-              [:dt "Related links"]
-              [:dd [:a {:href "http://clojure.org/"} "Main Clojure site"]]
-              [:dd [:a {:href "http://groups.google.com/group/clojure"}
-                       "Google Group"]]
-              [:dd [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
-              [:dd [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
-                       "Wiki"]]
-              [:dd [:a {:href "/date/"} "List of all logged dates"]]]
+             [:dt
+              [:form {:action "http://www.google.com/cse" :id "cse-search-box"}
+               [:div
+                [:input {:type "hidden" :name "cx"
+                         :value "partner-pub-1237864095616304:e7qm3gycp2b"}]
+                [:input {:type "hidden" :name "ie" :value "UTF-8"}]
+                [:input {:type "text"   :id "q" :name "q"  :size "10"}]
+                [:input {:type "submit" :id "sa" :name "sa" :value "Go"}]]]
+              [:script {:type "text/javascript"
+                        :src "http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"}]]
+             [:dd [:a {:href "http://clojure.org/"} "Main Clojure site"]]
+             [:dd [:a {:href "http://groups.google.com/group/clojure"}
+                   "Google Group"]]
+             [:dd [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
+             [:dd [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
+                   "Wiki"]]
+             [:dd [:a {:href "/date/"} "List of all logged dates"]]]
             [:div {:id "nav-head" :class "nav"}
                   [:noscript "Turn on JavaScript for date navigation."]
                   "&nbsp;"]])
@@ -121,7 +113,7 @@
        "</div></body></html>\n"))
 
 (defn minutes [timestr]
-  (Integer/parseInt (second (re-seq #"\\d+" timestr))))
+  (Integer/parseInt (second (re-seq #"\d+" timestr))))
 
 (defn html-post [prevpost {:keys [timestr speak emote text imc]}]
   (let [htmltext   (text-to-html text)
@@ -137,21 +129,23 @@
         (if speak htmltext [[:em emote] " " htmltext])])))
 
 (defn parse-post [prevs line]
-  (let [[_ timestr c body] (re-matches #"(..:..) (#\\S+): (.*)" line)]
+  (let [[_ timestr c body] (re-matches #"(..:..) (#\S+): (.*)" line)]
     (if (= c channel)
       (conj prevs
             (let [[_ speak emote text]
-                    (re-matches #"(?:< (\\S+)> | \\* (\\S+))(.*)" body)
+                    (re-matches #"(?:< (\S+)> | \* (\S+))(.*)" body)
                   imc (let [p (peek prevs)]
                         (if (= timestr (:timestr p)) (+ 1 (:imc p)) 0))
                   offset (count prevs)]
+              ;(println line)
+              ;(prn (hash-syms timestr speak emote text offset imc))
               (hash-syms timestr speak emote text offset imc)))
       prevs)))
 
 (defn split-days [cs]
   (let [#^SimpleDateFormat date-in-fmt (SimpleDateFormat. "MMM dd yyyy")]
     (for [[[_ datestr] body]
-            (take-ns 2 (rest (re-split #"--- Day changed ... (.*)" cs)))]
+            (partition 2 (rest (re-partition #"--- Day changed ... (.*)" cs)))]
       [(.parse date-in-fmt datestr) (re-seq #".+" (str body))])))
 
 (defn skip-until [#^Date lastdate days]
@@ -161,19 +155,20 @@
 
 (defn write-day [date lines]
   (let [datestr (.format date-file-fmt date)
-        filename (str "date/" datestr ".html")]
+        filename (str "date/" datestr ".html")
+        goodposts (reduce parse-post [] lines)]
     (.mkdir (File. "date"))
-    (with-open #^java.io.PrintWriter out (duck-streams/writer filename)
+    (with-open #^java.io.PrintWriter out (ds/writer filename)
+      (println "Writing" filename)
       (.write out #^String (html-header date))
-      (let [goodposts (reduce parse-post [] lines)]
-        (doseq string (map html-post (cons nil (seq goodposts)) goodposts)
-          (.write out #^String string)))
+      (doseq string (map html-post (cons nil goodposts) goodposts)
+        (.write out #^String string))
       (.write out #^String (html-footer date)))
     filename))
 
 
 (let [lastdate
-       (let [[_ datestr] (some #(re-find #"(....-..-..)\\.html" %)
+       (let [[_ datestr] (some #(re-find #"(....-..-..)\.html" %)
                                (-> (map str (.listFiles (File. "date")))
                                    sort reverse))]
          (when datestr (.parse date-file-fmt datestr)))
@@ -181,4 +176,4 @@
        (skip-until lastdate (split-days (charseq (mmap "irc-01.log"))))
       lastfile
        (reduce (fn [prev [date lines]] (write-day date lines)) nil days)]
-  (.. Runtime (getRuntime) (exec (str "ln -sf " lastfile " index.html"))))
+  (.. Runtime getRuntime (exec (str "ln -sf " lastfile " index.html"))))

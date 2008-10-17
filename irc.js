@@ -1,4 +1,4 @@
-function onload() {
+window.onload = function() {
   var m = /^#(.*)-(\d+\/)?(.*)$/.exec( document.location.hash );
   if( m ) {
     var p = document.getElementsByTagName('p');

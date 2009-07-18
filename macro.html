@@ -1,0 +1,177 @@
+<html
+><head
+ ><title
+  >Enter your macro help request</title
+  ><link type="text/css" rel="stylesheet" href="http://paste.lisp.org/lisppaste.css" /><link rel="alternate" type="application/rss+xml" title="Lisppaste RSS" href="http://paste.lisp.org/list.rss" />
+ <style type="text/css">
+   .error { border-right: 10px #dd0000 solid; }
+ </style>
+ <script type="text/javascript">
+   function validate() {
+     var form = document.forms[0];
+     var allok = true, ok;
+     for( f in {username:1,title:1,call:1,
+                expand:1,macro:1,macroexpand:1} )
+     {
+       ok = form[f].value;
+       if( ! ok ) allok = false;
+       form[f].className = ok ? '' : 'error';
+     }
+     if( allok ) {
+       form.action="http://paste.lisp.org/submit";
+       form.text.value = [";; Example call:", form.call.value,
+                          ";; Example expansion:", form.expand.value,
+                          ";; Attempted defmacro:", form.macro.value,
+                          ";; Results of macroexpand-1:", form.macroexpand.value
+                         ].join("\n\n");
+       form.submit();
+     }
+     else {
+       document.getElementById('msg').innerHTML =
+         "Some required fields are still blank.  They are marked in red below.";
+       document.body.scrollTop = 0;
+     }
+     return false;
+   }
+ </script>
+ </head
+ ><body
+ ><div class="top-header" 
+  >Enter your macro help request</div
+  ><p/><form accept-charset="utf-8" method="post" onsubmit="return validate()"
+  ><div class="info-text" 
+   >Enter a username, title, and paste contents into the fields below.
+   The paste will be announced on #clojure on Freenode.
+   <div><b id="msg"></b></div>
+   <noscript><p><b>Sorry, this form requires
+       JavaScript.</b></p></noscript></div
+   ><p/><table class="new-paste-form" 
+    ><tr
+    ><th align="left" width="0%" nowrap="nowrap" 
+     >Enter your username:</th
+     ><td
+      ><input type="text" name="username" value="" />
+      <input type="hidden" name="channel" value="#clojure" />
+      </td
+     ></tr
+    ><tr
+    ><th align="left" width="0%" nowrap="nowrap" 
+     >Enter a title:</th
+     ><td
+     ><input type="text" name="title" value="" /></td
+     ></tr
+    ><tr
+    ><th align="left" width="0%" nowrap="nowrap" 
+     ><i
+      >(Optional) Colorize as: </i
+      ></th
+     ><td
+     ><select name="colorize" 
+      ><option value="" selected="selected" 
+       >Default for this channel</option
+       ><option value="None" 
+       >None</option
+       ><option value="Basic Lisp" 
+       >Basic Lisp</option
+       ><option value="Scheme" 
+       >Scheme</option
+       ><option value="Emacs Lisp" 
+       >Emacs Lisp</option
+       ><option value="Common Lisp" 
+       >Common Lisp</option
+       ><option value="C" 
+       >C</option
+       ><option value="C++" 
+       >C++</option
+       ><option value="Java" 
+       >Java</option
+       ><option value="Objective C" 
+       >Objective C</option
+       ><option value="Erlang" 
+       >Erlang</option
+       ><option value="Python" 
+       >Python</option
+       ><option value="Haskell" 
+       >Haskell</option
+       ></select
+      ></td
+     ></tr
+    ><tr
+    ><th align="left" valign="top" width="0%" nowrap="nowrap" colspan="2"
+     >Enter an example of calling your macro:
+     <input type="hidden" name="text" id="text" />
+     </th
+     ></tr
+    ><tr
+    ><td colspan="2" 
+     ><textarea rows="6" cols="80" name="call"></textarea
+      ></td
+     ></tr
+    ><tr
+    ><th align="left" valign="top" width="0%" nowrap="nowrap" colspan="2"
+     >Enter your desired expansion for the above example:</th
+     ></tr
+    ><tr
+    ><td colspan="2" 
+     ><textarea rows="12" cols="80" name="expand"></textarea
+      ></td
+     ></tr
+    ><tr
+    ><th align="left" valign="top" width="0%" nowrap="nowrap" colspan="2"
+     >Enter your best attempt at a defmacro that accomplishes the above:</th
+     ></tr
+    ><tr
+    ><td colspan="2" 
+     ><textarea rows="12" cols="80" name="macro"></textarea
+      ></td
+     ></tr
+    ><tr
+    ><th align="left" valign="top" width="0%" nowrap="nowrap" colspan="2"
+     >Enter the results of calling macroexpand-1 using the above defmacro and example:</th
+     ></tr
+    ><tr
+    ><td colspan="2" 
+     ><textarea rows="20" cols="80" name="macroexpand"></textarea
+      ></td
+     ></tr
+    ><tr
+    ><th align="left" width="0%" nowrap="nowrap" 
+     >Submit your paste:</th
+     ><td
+     ><input type="submit" value="Submit paste" /> <input type="reset" value="Clear paste" /></td
+     ></tr
+    ></table
+   ></form
+  ><p/><div class="bottom-links" 
+  ><table width="100%" 
+   ><tr
+    ><td id="main-link" 
+     ><a href="http://paste.lisp.org/" 
+      >Main page</a
+      ></td
+     ><td id="other-links" 
+     ><a href="http://paste.lisp.org/new" 
+      >New paste</a
+      > | <a href="http://paste.lisp.org/list" 
+      >List all pastes</a
+      > | <a href="http://paste.lisp.org/syndication" 
+      >Syndication</a
+      > | <a href="http://common-lisp.net/project/lisppaste/xml-rpc.html" 
+      >XML-RPC</a
+      > | <a href="http://paste.lisp.org/system-server/show/lisppaste" 
+      >Source</a
+      > | <a href="http://paste.lisp.org/email" 
+      >Requests Email</a
+      > | <a href="http://paste.lisp.org/administration" 
+      >Administrate</a
+      > | <a href="http://www.common-lisp.net/project/lisppaste" 
+      >Project home</a
+      ></td
+     ></tr
+    ></table
+   ></div
+  ><i
+  >Lisppaste pastes can be made by anyone at any time. Imagine a fearsomely comprehensive disclaimer of liability. Now fear, comprehensively.</i
+  ></body
+ ></html
+>

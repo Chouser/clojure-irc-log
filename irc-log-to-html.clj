@@ -1,14 +1,13 @@
 (ns irc-log
     (:require (clojure.contrib [duck-streams :as ds]))
     (:use (clojure.contrib [mmap :only (mmap)]
-                           [str-utils :only (re-partition)]))
+                           [str-utils2 :as str2 :only ()]
+                           [shell-out :only (sh)]))
     (:import (java.util Date)
              (java.text SimpleDateFormat)
              (java.nio  ByteBuffer)
              (java.io   File BufferedReader FileReader FileWriter)))
 
-(def log-dir (File. "logs"))
-(def html-dir (File. "date"))
 (def channel "#clojure")
 
 (def #^SimpleDateFormat file-name-fmt (SimpleDateFormat. "yyyy-MM-dd"))
@@ -43,7 +42,7 @@
         linked  (apply str
                        (for [[text url]
                              (partition 2 (lazy-cat
-                                            (re-partition link-re escaped)
+                                            (str2/partition escaped link-re)
                                             [nil]))]
                          (str text
                               (when url
@@ -131,7 +130,7 @@
       prevs)))
 
 (defn log-to-html [date log-file html-file]
-  (println "Parsing" log-file)
+  ;(println "Parsing" log-file)
   (with-open [in (BufferedReader. (FileReader. log-file))]
     (let [goodposts (reduce parse-post [] (line-seq in))]
       (when-not (empty? goodposts)
@@ -141,12 +140,30 @@
             (.write out #^String string))
           (.write out (html-footer date)))))))
 
-(let [log-files (reverse (sort-by #(.getName %) (.listFiles log-dir)))
-      base-names (map #((re-find #"^(.*)\.log" (.getName %)) 1) log-files)
-      html-files (map #(File. html-dir (str % ".html")) base-names)
-      dates (map #(.parse file-name-fmt %) base-names)
-      html-files-to-sync (for [[l h] (map vector log-files html-files)
-                               :while (<= (.lastModified h) (.lastModified l))]
-                            h)]
-  (dorun (pmap log-to-html dates log-files html-files-to-sync))
-  (println "Should sync:" html-files-to-sync))
+(defn update-html
+  "Converts the log files in log-dir to html and saves them to
+  html-dir.  Starts with the latest (alphabetically) and works
+  backwards until an html file is found that was modified more
+  recently than the log file.  Returns a list of files updated, the
+  first in the list is the latest (appropriate for use as main page)"
+  [log-dir html-dir]
+  (let [log-files (reverse (sort-by #(.getName %) (.listFiles log-dir)))
+        base-names (map #((re-find #"^(.*)\.log" (.getName %)) 1) log-files)
+        html-files (map #(File. html-dir (str % ".html")) base-names)
+        dates (map #(.parse file-name-fmt %) base-names)
+        html-to-sync (for [[l h] (map vector log-files html-files)
+                           :while (<= (.lastModified h) (.lastModified l))]
+                       h)]
+    (dorun (pmap log-to-html dates log-files html-to-sync))
+    html-to-sync))
+
+(defn update-remote-html [log-dir html-dir link-name rsync-target]
+  (when-let [[latest :as html-files] (seq (map #(.getPath %)
+                                               (update-html log-dir html-dir)))]
+    (sh "ln" "-sf" latest link-name)
+    (println (sh "rsync" "-ua" "--files-from=-" "." rsync-target
+        :in (str2/join "\n" (cons link-name html-files))))))
+
+(update-remote-html (File. "logs") (File. "date") "index.html"
+                    "n01se.net:clojure-log.n01se.net/")
+(shutdown-agents)

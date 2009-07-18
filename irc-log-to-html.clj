@@ -8,8 +8,6 @@
              (java.nio  ByteBuffer)
              (java.io   File BufferedReader FileReader FileWriter)))
 
-(def channel "#clojure")
-
 (def #^SimpleDateFormat file-name-fmt (SimpleDateFormat. "yyyy-MM-dd"))
 (def #^SimpleDateFormat html-fmt (SimpleDateFormat. "MMM dd yyyy"))
 
@@ -58,14 +56,14 @@
          "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
          "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
          (xhtml
-           [:head [:title channel " - " datestr]
+           [:head [:title "#clojure log - " datestr]
                   [:meta {:http-equiv "Content-Type"
                           :content "application/xhtml+xml; charset=UTF-8"}]
                   [:link   {:type "text/css" :href "/irc.css"
                             :rel "stylesheet"}]
                   [:script {:type "text/javascript" :src "/irc.js"}]])
          "<body>"
-         (xhtml [:h1 channel " - " datestr])
+         (xhtml [:h1 "#clojure log - " datestr])
          "<div id=\"narrow\">"
           (xhtml [
             [:dl
@@ -116,18 +114,17 @@
         (if speak htmltext [[:em emote] " " htmltext])])))
 
 (defn parse-post [prevs line]
-  (let [[_ timestr c body] (re-matches #"(..:..) (#\S+): (.*)" line)]
-    (if (= c channel)
-      (conj prevs
-            (let [[_ speak emote text]
-                    (re-matches #"(?:< (\S+)> | \* (\S+))(.*)" body)
-                  imc (let [p (peek prevs)]
-                        (if (= timestr (:timestr p)) (+ 1 (:imc p)) 0))
-                  offset (count prevs)]
-              ;(println line)
-              ;(prn (hash-syms timestr speak emote text offset imc))
-              (hash-syms timestr speak emote text offset imc)))
-      prevs)))
+  (if-let [[_ timestr speak emote text]
+           (re-matches #"(..:..)(?: \S+:)? (?:< (\S+)> | \* (\S+))(.*)" line)]
+    (let [imc (let [p (peek prevs)]
+                (if (= timestr (:timestr p))
+                  (+ 1 (:imc p))
+                  0))
+          offset (count prevs)]
+      ;(println line)
+      ;(prn (hash-syms timestr speak emote text offset imc))
+      (conj prevs (hash-syms timestr speak emote text offset imc)))
+    prevs))
 
 (defn log-to-html [date log-file html-file]
   ;(println "Parsing" log-file)
@@ -164,6 +161,8 @@
     (println (sh "rsync" "-ua" "--files-from=-" "." rsync-target
         :in (str2/join "\n" (cons link-name html-files))))))
 
-(update-remote-html (File. "logs") (File. "date") "index.html"
-                    "n01se.net:clojure-log.n01se.net/")
+(update-remote-html
+  (File. "/home/chouser/commlog/irssi/clojure")
+  (File. "date") "index.html"
+  "n01se.net:clojure-log.n01se.net/")
 (shutdown-agents)

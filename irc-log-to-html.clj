@@ -135,7 +135,8 @@
           (.write out (html-header date))
           (doseq [string (map html-post (cons nil goodposts) goodposts)]
             (.write out #^String string))
-          (.write out (html-footer date)))))))
+          (.write out (html-footer date)))
+        html-file))))
 
 (defn update-html
   "Converts the log files in log-dir to html and saves them to
@@ -151,8 +152,7 @@
         html-to-sync (for [[l h] (map vector log-files html-files)
                            :while (<= (.lastModified h) (.lastModified l))]
                        h)]
-    (dorun (pmap log-to-html dates log-files html-to-sync))
-    html-to-sync))
+    (filter identity (doall (pmap log-to-html dates log-files html-to-sync)))))
 
 (defn update-remote-html [log-dir html-dir link-name rsync-target]
   (when-let [[latest :as html-files] (seq (map #(.getPath %)

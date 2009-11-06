@@ -74,3 +74,20 @@ dt { margin: 0 0 1em 1em; }
 #q { width: 19em; }
 #sa { padding: 0; }
 #q, #sa { font-size: 80%; }
+
+/* iPhone */
+@media screen and (max-width: 480px)
+{
+  h1 { font-size: 12pt; }
+  body { margin: 8px 0; }
+  dl { display: none; }
+  p { padding-right: 0; word-wrap: break-word; }
+  #narrow { width: 480px; }
+  #main { background-image: none; }
+}
+
+/* iPhone portrait */
+@media screen and (max-width: 320px)
+{
+  #narrow { width: 320px; }
+}

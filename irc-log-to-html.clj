@@ -1,7 +1,6 @@
 (ns irc-log
     (:require (clojure.contrib [duck-streams :as ds]))
-    (:use (clojure.contrib [mmap :only (mmap)]
-                           [str-utils2 :as str2 :only ()]
+    (:use (clojure.contrib [str-utils2 :as str2 :only ()]
                            [shell-out :only (sh)]))
     (:import (java.util Date)
              (java.text SimpleDateFormat)
@@ -59,6 +58,10 @@
            [:head [:title "#clojure log - " datestr]
                   [:meta {:http-equiv "Content-Type"
                           :content "application/xhtml+xml; charset=UTF-8"}]
+                  [:meta {:name "viewport"
+                          :content (str "width=device-width,"
+                                        "minimum-scale=1.0,"
+                                        "maximum-scale=1.0")}]
                   [:link   {:type "text/css" :href "/irc.css"
                             :rel "stylesheet"}]
                   [:script {:type "text/javascript" :src "/irc.js"}]])

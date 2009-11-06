@@ -62,9 +62,9 @@
                           :content (str "width=device-width,"
                                         "minimum-scale=1.0,"
                                         "maximum-scale=1.0")}]
-                  [:link   {:type "text/css" :href "/irc.css"
+                  [:link   {:type "text/css" :href "irc.css"
                             :rel "stylesheet"}]
-                  [:script {:type "text/javascript" :src "/irc.js"}]])
+                  [:script {:type "text/javascript" :src "irc.js"}]])
          "<body>"
          (xhtml [:h1 "#clojure log - " datestr])
          "<div id=\"narrow\">"
@@ -107,9 +107,9 @@
   (let [htmltext   (text-to-html text)
         prevminute (if-let [ptime (:timestr prevpost)] (minutes ptime) 99)]
     (xhtml
-      [:p
+      [:p (when (re-find #"rhickey_*" (str speak)) {:class "bdfl"})
         [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
-              (if (<= 0 (- (minutes timestr) prevminute) 5) nil {:class "nh"}))
+              (when (<= 5 (- (minutes timestr) prevminute)) {:class "nh"}))
             (second (re-find #"^0?(.*)" timestr))]
         " "
         (when (or emote (not= speak (:speak prevpost)))

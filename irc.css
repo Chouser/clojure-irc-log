@@ -34,6 +34,7 @@ b {
   font-weight: bold;
   text-align: right;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 dl {

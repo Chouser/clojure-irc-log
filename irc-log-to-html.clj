@@ -1,6 +1,7 @@
 (ns irc-log
     (:require (clojure.contrib [duck-streams :as ds]))
     (:use (clojure.contrib [str-utils2 :as str2 :only ()]
+                           [seq-utils :only (reductions)]
                            [shell-out :only (sh)]))
     (:import (java.util Date)
              (java.text SimpleDateFormat)
@@ -103,18 +104,33 @@
 (defn minutes [timestr]
   (Integer/parseInt (second (re-seq #"\d+" timestr))))
 
-(defn html-post [prevpost {:keys [timestr speak emote text imc]}]
+(defn html-post [prevpost {:keys [timestr speak emote text imc]}
+                 intr? intr-num last-intr-num]
   (let [htmltext   (text-to-html text)
-        prevminute (if-let [ptime (:timestr prevpost)] (minutes ptime) 99)]
+        prevminute (if-let [ptime (:timestr prevpost)] (minutes ptime) 99)
+        last-intr? (== intr-num last-intr-num)]
     (xhtml
-      [:p (when (re-find #"rhickey_*" (str speak)) {:class "bdfl"})
-        [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
-              (when (<= 5 (- (minutes timestr) prevminute)) {:class "nh"}))
-            (second (re-find #"^0?(.*)" timestr))]
-        " "
-        (when (or emote (not= speak (:speak prevpost)))
-          [:b (if emote "*" (str speak ":")) " "])
-        (if speak htmltext [[:em emote] " " htmltext])])))
+      [(when intr?
+         [:div {:class "i"}
+          [:a {:name (str "i" intr-num)}]
+          (when last-intr? [:a {:name "iend"}])
+          [:a {:class "i",
+               :href (str "#i" (if last-intr? "0" (inc intr-num)))}
+           (if last-intr? "↟" "↧")]
+          [:a {:class "i",
+               :href (str "#i" (if (zero? intr-num) "end" (dec intr-num)))}
+           (if (zero? intr-num) "↡" "↥")]])
+       [:p (when (re-find #"rhickey_*" (str speak)) {:class "bdfl"})
+         [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
+               (when (<= 5 (- (minutes timestr) prevminute)) {:class "nh"}))
+             (second (re-find #"^0?(.*)" timestr))]
+         " "
+         (when (or emote (not= speak (:speak prevpost)))
+           [:b (if emote "*" (str speak ":")) " "])
+         (if speak htmltext [[:em emote] " " htmltext])]])))
+
+(defn interesting? [post]
+  (re-find #".{20,}\?$" (:text post)))
 
 (defn parse-post [prevs line]
   (if-let [[_ timestr speak emote text]
@@ -131,15 +147,19 @@
 
 (defn log-to-html [date log-file html-file]
   ;(println "Parsing" log-file)
-  (with-open [in (BufferedReader. (FileReader. log-file))]
-    (let [goodposts (reduce parse-post [] (line-seq in))]
-      (when-not (empty? goodposts)
-        (with-open [out (FileWriter. html-file)]
-          (.write out (html-header date))
-          (doseq [string (map html-post (cons nil goodposts) goodposts)]
-            (.write out #^String string))
-          (.write out (html-footer date)))
-        html-file))))
+  (let [goodposts (with-open [in (BufferedReader. (FileReader. log-file))]
+                    (reduce parse-post [] (line-seq in)))
+        intrs (map interesting? goodposts)
+        intr-num (reductions (fn [a b] (if b (inc a) a)) 0 intrs)]
+    (when-not (empty? goodposts)
+      (with-open [out (FileWriter. html-file)]
+        (.write out (html-header date))
+        (doseq [string (map html-post
+                            (cons nil goodposts) goodposts
+                            intrs intr-num (repeat (dec (last intr-num))))]
+          (.write out #^String string))
+        (.write out (html-footer date)))
+      html-file)))
 
 (defn update-html
   "Converts the log files in log-dir to html and saves them to

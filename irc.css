@@ -56,17 +56,24 @@ p:hover a { visibility: visible; }
 a:target, a.nh { color: #000; visibility: visible; }
 p.bdfl b { color: #c00; }
 
-a.nm, dd a, .nav a {
+a.nm, dd a, .nav a, a.i {
   color: #00f;
   visibility: visible;
   float: none;
   margin-left: 0;
 }
 
+a.i { text-decoration: none; }
+
+div.i {
+  float: right;
+  width: 3em;
+  font-size: 150%;
+}
+
 a.nm:visited, dd a:visited, .nav a { color: purple; }
 .nav, .foot { text-align: center; font-style: italic; }
 .nav a { padding: 0 1em; }
-.nav a.i { color: #555; }
 
 /* opera compatibility for <wbr> */
 wbr:after { content: "\00200B" }
@@ -85,6 +92,7 @@ dt { margin: 0 0 1em 1em; }
   p { padding-right: 0; word-wrap: break-word; }
   #narrow { width: 480px; }
   #main { background-image: none; }
+  div.i { width: auto; }
 }
 
 /* iPhone portrait */

@@ -49,7 +49,8 @@ dl {
 }
 
 dd { margin: 0; }
-dd a { padding: 0 1em; }
+dd a { padding: 0 2em 0 1em; border-left: 1px #aaf solid; }
+dd a:hover { background: #f2f2ff; }
 em { font-style: normal; font-weight: bold; }
 a { color: #aaa; visibility: hidden; }
 p:hover a { visibility: visible; }
@@ -82,6 +83,19 @@ dt { margin: 0 0 1em 1em; }
 #q { width: 19em; }
 #sa { padding: 0; }
 #q, #sa { font-size: 80%; }
+
+#book {
+  color: #000;
+  text-align: center;
+  text-decoration: none;
+  font-size: xx-small;
+  visibility: visible;
+  float: right;
+  width: 90px;
+  height: 80px;
+  margin-top: 5px;
+  background: no-repeat 50% 100% url(/joy.jpg);
+}
 
 /* iPhone */
 @media screen and (max-width: 480px)

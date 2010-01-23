@@ -80,13 +80,13 @@
                 [:input {:type "text"   :id "q" :name "q"  :size "10"}]
                 [:input {:type "submit" :id "sa" :name "sa" :value "Go"}]]]
               [:script {:type "text/javascript"
-                        :src "http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"}]]
+                        :src "http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"}]
+              [:a {:id "book", :href "http://joyofclojure.com/"}
+               [:i "The Joy of Clojure"]]]
              [:dd [:a {:href "http://clojure.org/"} "Main Clojure site"]]
              [:dd [:a {:href "http://groups.google.com/group/clojure"}
                    "Google Group"]]
              [:dd [:a {:href "irc://irc.freenode.net/clojure"} "IRC"]]
-             [:dd [:a {:href "http://en.wikibooks.org/wiki/Clojure_Programming"}
-                   "Wiki"]]
              [:dd [:a {:href "/date/"} "List of all logged dates"]]]
             [:div {:id "nav-head" :class "nav"}
                   [:noscript "Turn on JavaScript for date navigation."]

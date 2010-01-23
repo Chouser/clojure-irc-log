@@ -6,7 +6,8 @@
     (:import (java.util Date)
              (java.text SimpleDateFormat)
              (java.nio  ByteBuffer)
-             (java.io   File BufferedReader FileReader FileWriter)))
+             (java.io   File BufferedReader FileReader FileOutputStream
+                        OutputStreamWriter)))
 
 (def #^SimpleDateFormat file-name-fmt (SimpleDateFormat. "yyyy-MM-dd"))
 (def #^SimpleDateFormat html-fmt (SimpleDateFormat. "MMM dd yyyy"))
@@ -152,7 +153,8 @@
         intrs (map interesting? goodposts)
         intr-num (reductions (fn [a b] (if b (inc a) a)) 0 intrs)]
     (when-not (empty? goodposts)
-      (with-open [out (FileWriter. html-file)]
+      (with-open [out (-> (FileOutputStream. html-file)
+                        (OutputStreamWriter. "UTF-8"))]
         (.write out (html-header date))
         (doseq [string (map html-post
                             (cons nil goodposts) goodposts

@@ -6,8 +6,8 @@
     (:import (java.util Date)
              (java.text SimpleDateFormat)
              (java.nio  ByteBuffer)
-             (java.io   File BufferedReader FileReader FileOutputStream
-                        OutputStreamWriter)))
+             (java.io   File BufferedReader FileInputStream FileOutputStream
+                        InputStreamReader OutputStreamWriter)))
 
 (def #^SimpleDateFormat file-name-fmt (SimpleDateFormat. "yyyy-MM-dd"))
 (def #^SimpleDateFormat html-fmt (SimpleDateFormat. "MMM dd yyyy"))
@@ -148,7 +148,9 @@
 
 (defn log-to-html [date log-file html-file]
   ;(println "Parsing" log-file)
-  (let [goodposts (with-open [in (BufferedReader. (FileReader. log-file))]
+  (let [goodposts (with-open [in (-> (FileInputStream. log-file)
+                                   (InputStreamReader. "UTF-8")
+                                   BufferedReader.)]
                     (reduce parse-post [] (line-seq in)))
         intrs (map interesting? goodposts)
         intr-num (reductions (fn [a b] (if b (inc a) a)) 0 intrs)]

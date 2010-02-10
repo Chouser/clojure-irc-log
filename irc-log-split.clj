@@ -1,5 +1,5 @@
 (ns irc-log-split
-    (:require (clojure.contrib [duck-streams :as ds]))
+    (:require (clojure.contrib [io :as io]))
     (:use (clojure.contrib [mmap :only (mmap)]
                            [str-utils :only (re-partition)]))
     (:import (java.util Date)
@@ -11,7 +11,7 @@
   (let [#^SimpleDateFormat fmt1 (SimpleDateFormat. "MMM dd hh:mm:ss yyyy")
         #^SimpleDateFormat fmt2 (SimpleDateFormat. "MMM dd yyyy")
         #^SimpleDateFormat file-fmt (SimpleDateFormat. "yyyy-MM-dd")
-        lines (mapcat ds/read-lines
+        lines (mapcat io/read-lines
                       ["/home/chouser/commlog/irssi/irc-01.log"
                        "/home/chouser/commlog/irssi/irc-02.log"])]
     (loop [[line & lines] lines, writer nil, date nil, date-line nil]

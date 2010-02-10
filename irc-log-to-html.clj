@@ -1,8 +1,7 @@
 (ns irc-log
-    (:require (clojure.contrib [duck-streams :as ds]))
-    (:use (clojure.contrib [str-utils2 :as str2 :only ()]
-                           [seq-utils :only (reductions)]
-                           [shell-out :only (sh)]))
+    (:use (clojure.contrib [string :as str :only ()]
+                           [seq :only (reductions)]
+                           [shell :only (sh)]))
     (:import (java.util Date)
              (java.text SimpleDateFormat)
              (java.nio  ByteBuffer)
@@ -41,7 +40,7 @@
         linked  (apply str
                        (for [[text url]
                              (partition 2 (lazy-cat
-                                            (str2/partition escaped link-re)
+                                            (str/partition link-re escaped)
                                             [nil]))]
                          (str text
                               (when url
@@ -186,7 +185,7 @@
                                                (update-html log-dir html-dir)))]
     (sh "ln" "-sf" latest link-name)
     (println (sh "rsync" "-ua" "--files-from=-" "." rsync-target
-        :in (str2/join "\n" (cons link-name html-files))))))
+        :in (str/join "\n" (cons link-name html-files))))))
 
 (update-remote-html
   (File. "/home/chouser/commlog/irssi/clojure")

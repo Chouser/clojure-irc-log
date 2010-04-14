@@ -134,7 +134,7 @@
 
 (defn parse-post [prevs line]
   (if-let [[_ timestr speak emote text]
-           (re-matches #"(..:..)(?: \S+:)? (?:< (\S+)> | \* (\S+))(.*)" line)]
+           (re-matches #"(..:..)(?: \S+:)? (?:<.(\S+)> | \* (\S+))(.*)" line)]
     (let [imc (let [p (peek prevs)]
                 (if (= timestr (:timestr p))
                   (+ 1 (:imc p))

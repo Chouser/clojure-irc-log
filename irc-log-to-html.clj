@@ -1,6 +1,5 @@
 (ns irc-log
     (:use (clojure.contrib [string :as str :only ()]
-                           [seq :only (reductions)]
                            [shell :only (sh)]))
     (:import (java.util Date)
              (java.text SimpleDateFormat)

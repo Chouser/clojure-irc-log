@@ -63,8 +63,7 @@
                                         "minimum-scale=1.0,"
                                         "maximum-scale=1.0")}]
                   [:link   {:type "text/css" :href "irc.css"
-                            :rel "stylesheet"}]
-                  [:script {:type "text/javascript" :src "irc.js"}]])
+                            :rel "stylesheet"}]])
          "<body>"
          (xhtml [:h1 "#clojure log - " datestr])
          "<div id=\"narrow\">"
@@ -94,10 +93,11 @@
 
 (defn #^String html-footer [date]
   (str "</div>"
-       (xhtml [
-         [:div {:id "nav-foot" :class "nav"} "&nbsp;"]
-         [:div {:class "foot"} "Logging service provided by "
-               [:a {:class "nm" :href "http://n01se.net/"} "n01se.net"]]])
+       (xhtml
+         [[:div {:id "nav-foot" :class "nav"} "&nbsp;"]
+          [:div {:class "foot"} "Logging service provided by "
+           [:a {:class "nm" :href "http://n01se.net/"} "n01se.net"]]
+          [:script {:type "text/javascript" :src "irc.js"}]])
        "</div></body></html>\n"))
 
 (defn minutes [timestr]

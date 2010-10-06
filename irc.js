@@ -17,6 +17,13 @@ window.onload = function() {
     }
   }
 
+  var anchors = document.getElementsByTagName('a');
+  for(var j = 0; j < anchors.length; ++j) {
+    if(anchors[j].name && !anchors[j].href) {
+      anchors[j].href = "#" + anchors[j].name;
+    }
+  }
+
   var nav = document.getElementById('nav-head');
 
   var req = false;

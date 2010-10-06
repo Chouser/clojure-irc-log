@@ -103,33 +103,18 @@
 (defn minutes [timestr]
   (Integer/parseInt (second (re-seq #"\d+" timestr))))
 
-(defn html-post [prevpost {:keys [timestr speak emote text imc]}
-                 intr? intr-num last-intr-num]
+(defn html-post [prevpost {:keys [timestr speak emote text imc]}]
   (let [htmltext   (text-to-html text)
-        prevminute (if-let [ptime (:timestr prevpost)] (minutes ptime) 99)
-        last-intr? (== intr-num last-intr-num)]
+        prevminute (if-let [ptime (:timestr prevpost)] (minutes ptime) 99)]
     (xhtml
-      [(when intr?
-         [:div {:class "i"}
-          [:a {:name (str "i" intr-num)}]
-          (when last-intr? [:a {:name "iend"}])
-          [:a {:class "i",
-               :href (str "#i" (if last-intr? "0" (inc intr-num)))}
-           (if last-intr? "↟" "↧")]
-          [:a {:class "i",
-               :href (str "#i" (if (zero? intr-num) "end" (dec intr-num)))}
-           (if (zero? intr-num) "↡" "↥")]])
-       [:p (when (re-find #"rhickey_*" (str speak)) {:class "bdfl"})
-         [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
-               (when (<= 5 (- (minutes timestr) prevminute)) {:class "nh"}))
-             (second (re-find #"^0?(.*)" timestr))]
-         " "
-         (when (or emote (not= speak (:speak prevpost)))
-           [:b (if emote "*" (str speak ":")) " "])
-         (if speak htmltext [[:em emote] " " htmltext])]])))
-
-(defn interesting? [post]
-  (re-find #".{20,}\?$" (:text post)))
+      [:p (when (re-find #"rhickey_*" (str speak)) {:class "bdfl"})
+        [:a (merge {:name (str timestr (when (< 0 imc) (char (+ imc 96))))}
+              (when (<= 5 (- (minutes timestr) prevminute)) {:class "nh"}))
+            (second (re-find #"^0?(.*)" timestr))]
+        " "
+        (when (or emote (not= speak (:speak prevpost)))
+          [:b (if emote "*" (str speak ":")) " "])
+        (if speak htmltext [[:em emote] " " htmltext])])))
 
 (defn parse-post [prevs line]
   (if-let [[_ timestr speak emote text]
@@ -149,16 +134,13 @@
   (let [goodposts (with-open [in (-> (FileInputStream. log-file)
                                    (InputStreamReader. "UTF-8")
                                    BufferedReader.)]
-                    (reduce parse-post [] (line-seq in)))
-        intrs (map interesting? goodposts)
-        intr-num (reductions (fn [a b] (if b (inc a) a)) 0 intrs)]
+                    (reduce parse-post [] (line-seq in)))]
     (when-not (empty? goodposts)
       (with-open [out (-> (FileOutputStream. html-file)
                         (OutputStreamWriter. "UTF-8"))]
         (.write out (html-header date))
         (doseq [string (map html-post
-                            (cons nil goodposts) goodposts
-                            intrs intr-num (repeat (dec (last intr-num))))]
+                            (cons nil goodposts) goodposts)]
           (.write out #^String string))
         (.write out (html-footer date)))
       html-file)))

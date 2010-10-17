@@ -8,7 +8,9 @@ window.onload = function() {
     var parts = document.location.hash.substr(1).split(/\//);
     for( var i = 0; i < parts.length; ++i ) {
       m = /^(.*?)=(.*)/.exec( parts[i] );
-      opts[m[1]] = m[2];
+      if( m ) {
+        opts[m[1]] = m[2];
+      }
     }
   }
 

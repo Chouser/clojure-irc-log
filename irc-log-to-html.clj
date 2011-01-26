@@ -1,6 +1,6 @@
 (ns irc-log
-    (:use (clojure.contrib [string :as str :only ()]
-                           [shell :only (sh)]))
+    (:use [clojure.string :as str :only []]
+          [clojure.java.shell :only [sh]])
     (:import (java.util Date)
              (java.text SimpleDateFormat)
              (java.nio  ByteBuffer)
@@ -36,17 +36,12 @@
 
 (defn text-to-html [text]
   (let [escaped (apply str (map #(or (escape-map %) %) text))
-        linked  (apply str
-                       (for [[text url]
-                             (partition 2 (lazy-cat
-                                            (str/partition link-re escaped)
-                                            [nil]))]
-                         (str text
-                              (when url
-                                (let [urltext (reduce #(str %1 "<wbr />" %2)
-                                                      (re-seq wrap-re url))]
-                                  (xhtml [:a {:href url :class "nm"}
-                                          urltext]))))))]
+        linked  (str/replace escaped link-re
+                             (fn [url]
+                               (let [urltext (reduce #(str %1 "<wbr />" %2)
+                                                     (re-seq wrap-re url))]
+                                 (xhtml [:a {:href url :class "nm"}
+                                         urltext]))))]
     (str linked "\n")))
 
 (defn #^String html-header [date]

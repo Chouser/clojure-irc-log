@@ -1,31 +1,70 @@
+html {
+  height: 100%;
+}
+
 body {
   font-family: Georgia,Palatino,Times,"Times New Roman",serif;
   font-size: 9pt;
-  background: #E3E3E3;
+  background: #90b4fe;
   text-align: center;
+  margin: 9px;
+  height: 95%;
 }
 
-#narrow {
-  width: 50em;
+#frame {
+  width: 35em;
   margin: 0px auto;
   text-align: left;
+  background: #fff;
+  border: 1px #5881d8 solid;
+  border-left: 36px #5881d8 solid;
+  padding-left: 1em;
+  padding-right: 1em;
+  height: 100%;
 }
 
-#main {
-  background: #FFFFFF repeat-y right
-    url(http://clojure.org/space/showimage/content-background.gif);
+h1 {
+  float: right;
+  font-size: 14pt;
+  margin: 0;
+  padding: 0.5ex 0;
+}
+
+h2 {
+  font-size: 14pt;
+  margin: 0;
+  padding: 0.5ex 0;
 }
 
 p {
+  padding: 0.5ex 0;
   padding-left: 10em;
-  padding-right: 13em;
-  margin: 1ex 0;
+  margin: 0;
 }
 
+.page {
+  padding-left: 1em;
+  width: 35em;
+  background: #fff;
+  height: 100%;
+}
+
+/* make anchors behave like timestamps */
 a {
   float: left;
   margin-left: -10em;
 }
+
+/* make nm anchors act like regular links */
+a.nm {
+  color: #00f;
+  visibility: visible;
+  float: none;
+  margin-left: 0;
+  text-decoration: underline;
+}
+
+a.nm:visited { color: purple; }
 
 b {
   float: left;
@@ -37,59 +76,14 @@ b {
   white-space: nowrap;
 }
 
-dl {
-  margin: 0 1em;
-  margin-top: -1em;
-  background: #E4EAF7 url(http://clojure.org/space/showimage/resources-background.gif) repeat-y scroll 0% 0%;
-  border-top: 1px solid #ABC4E2;
-  border-bottom: 1px solid #ABC4E2;
-  float: right;
-  padding: 5px 0pt;
-  width: 234px;
-}
-
-dd { margin: 0; }
-dd a { padding: 0 2em 0 1em; border-left: 1px #aaf solid; }
-dd a:hover { background: #f2f2ff; }
 em { font-style: normal; font-weight: bold; }
 a { color: #aaa; visibility: hidden; text-decoration: none; }
 p:hover a { visibility: visible; }
 a:target, a.nh { color: #000; visibility: visible; }
 p.bdfl b { color: #c00; }
 
-a.nm, dd a, .nav a {
-  color: #00f;
-  visibility: visible;
-  float: none;
-  margin-left: 0;
-  text-decoration: underline;
-}
-
-a.nm:visited, dd a:visited, .nav a { color: purple; }
-.nav, .foot { text-align: center; font-style: italic; }
-.nav a { padding: 0 1em; }
-.nav a.i { color: #555; }
-
 /* opera compatibility for <wbr> */
 wbr:after { content: "\00200B" }
-
-dt { margin: 0 0 1em 1em; }
-#q { width: 19em; }
-#sa { padding: 0; }
-#q, #sa { font-size: 80%; }
-
-#book {
-  color: #000;
-  text-align: center;
-  text-decoration: none;
-  font-size: xx-small;
-  visibility: visible;
-  float: right;
-  width: 90px;
-  height: 80px;
-  margin-top: 5px;
-  background: no-repeat 50% 100% url(/joy.jpg);
-}
 
 /* iPhone */
 @media screen and (max-width: 480px)

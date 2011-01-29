@@ -1,74 +1,36 @@
-$(document).ready(function() {
+function resize() {
+  // JavaScript is running, so convert page from vertical scrolling to
+  // horizontal paging:
+  $('#frame').addClass('js');
+  $('#columns').addClass('js');
   $(document.body).height($(window).height() - 20);
-  $(document.body).css('overflow', 'hidden');
-  var page_height = $('#frame').innerHeight() + 5;
-  var prev_page = $('.page');
 
-      var new_page = $(document.createElement('div'));
+  // Measure total width of the columns and make #wide exactly that big.
+  $('#wide').css('width', $('#frame')[0].scrollWidth + 'px');
 
-      new_page.insertAfter(prev_page);
+  // Insert per-column headers and footers
+  $('#columns').before('<h1 id="headrow">Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header Header </h1>');
+  $('#columns').after('<div id="footrow">footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer</div>');
+  $('#columns').height(
+      $('#frame').innerHeight()
+      - $('#headrow').outerHeight()
+      - $('#footrow').outerHeight());
+}
 
-  $('.page').children().each(function(i, elem) {
-    var elem_height = $(elem).outerHeight();
-    new_page.append(elem);
-    $(elem).addClass('h'+elem_height+'pn'+($('.page').length)+'ph'+new_page.height());
-    if(new_page.height() > page_height) {
-      new_page.addClass('page');
+function scrollBy(p) {
+  var frame = $('#frame')[0];
+  var width = $('#frame').innerWidth(); // not quite right
+  frame.scrollLeft = (Math.floor(frame.scrollLeft / width) + p) * width;
+}
 
-      prev_page = new_page;
-      new_page = $(document.createElement('div'));
-
-      new_page.insertAfter(prev_page);
-      new_page.append(prev_page.children('h1').clone());
-      new_page.append(prev_page.children('h2').clone());
-      new_page.append(elem); // move it again
-    }
-  });
-
-  /*
-  var page_offset = 0;
-  var page_count = 0;
-  var pages = [];
-  var page_offsets = [0];
-  $('.page').children().each(function(i, elem) {
-    var offset = $(elem).offset().top;
-    if( offset - page_offset > page_height ) {
-      page_count += 1;
-      page_offset = offset;
-      pages[page_count] = [];
-      page_offsets.push(offset);
-    }
-    if( page_count > 0 ) {
-      pages[page_count].push(elem);
-    }
-  });
-  $.each(pages, function(i, page_elems) {
-    if( i > 0 ) {
-      //console.log($(page_elems[0]).offset().top);
-      var page = $(document.createElement('div'));
-      page.addClass('page');
-      //page.css('top', -page_offsets[1]*i);
-      //page.css('left', (i * 35) + "em");
-      $('#frame').append(page);
-      $.each(page_elems, function(j, elem) {
-        page.append(elem);
-      });
-    }
-  });
-  */
-  $('#frame').cycle({
-    fx:     'shuffle',
-    speed:  'fast',
-    next:   '#frame',
-    timeout: 0
-  });
-  $(document).keydown(function(e) {
-    console.log($('#frame'));
-    if(e.which == 39 || e.which == 32) {
-      $('#frame').cycle('next');
-    }
-    if(e.which == 37) {
-      $('#frame').cycle('prev');
-    }
-  });
+$(document).keydown(function(e) {
+  if(e.which == 39 || e.which == 32) {
+    scrollBy(1);
+  }
+  if(e.which == 37) {
+    scrollBy(-1);
+  }
 });
+
+$(document).ready(resize);
+//$(document).resize(resize);

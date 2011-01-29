@@ -1,57 +1,55 @@
-html {
-  height: 100%;
-}
-
 body {
   font-family: Georgia,Palatino,Times,"Times New Roman",serif;
   font-size: 9pt;
   background: #90b4fe;
   text-align: center;
-  margin: 9px;
-  height: 95%;
 }
 
 #frame {
-  width: 35em;
+  width: 36em;
   margin: 0px auto;
   text-align: left;
   background: #fff;
   border: 1px #5881d8 solid;
   border-left: 36px #5881d8 solid;
-  padding-left: 1em;
-  padding-right: 1em;
   height: 100%;
 }
+#frame.js {
+  overflow: hidden;
+}
 
-h1 {
-  float: right;
+#wide {
+  height: 100%;
+  padding: 0 0.5em;
+}
+
+#columns {
+  background: #fff;
+  height: 90%;
+}
+#columns.js {
+  -webkit-column-width: 34em;
+  -moz-column-width: 34em;
+}
+
+header {
+  display: table;
+  width: 100%;
+}
+h1, h2 {
+  display: table-cell;
   font-size: 14pt;
   margin: 0;
   padding: 0.5ex 0;
 }
-
 h2 {
-  font-size: 14pt;
-  margin: 0;
-  padding: 0.5ex 0;
+  text-align: right;
 }
 
 p {
   padding: 0.5ex 0;
   padding-left: 10em;
   margin: 0;
-}
-
-.page {
-  padding-left: 1em;
-  width: 35em;
-  background: #fff;
-  height: 100%;
-  display: none;
-}
-
-.firstpage {
-  display: block;
 }
 
 /* make anchors behave like timestamps */

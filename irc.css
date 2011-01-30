@@ -14,35 +14,41 @@ body {
   border-left: 36px #5881d8 solid;
   height: 100%;
 }
-#frame.js {
+#frame.paged {
   overflow: hidden;
 }
 
 #wide {
   height: 100%;
-  padding: 0 0.5em;
 }
 
 #columns {
   background: #fff;
   height: 90%;
+  margin: 0 0.5em;
 }
-#columns.js {
+#columns.paged {
   -webkit-column-width: 34em;
   -moz-column-width: 34em;
 }
 
-header {
-  display: table;
+.header {
   width: 100%;
+  border: none;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
-h1, h2 {
-  display: table-cell;
+#headrow {
+  -webkit-column-width: 34em;
+  -moz-column-width: 34em;
+  margin: 0 0.5em;
+}
+.lh, .rh {
   font-size: 14pt;
   margin: 0;
   padding: 0.5ex 0;
 }
-h2 {
+.rh {
   text-align: right;
 }
 

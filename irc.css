@@ -19,7 +19,6 @@ body {
 }
 
 #columns {
-  background: #fff;
   margin: 0 0.5em;
 }
 #columns.paged {
@@ -27,12 +26,12 @@ body {
   -moz-column-width: 34em;
 }
 
-header {
+header, footer {
   -webkit-column-width: 34em;
   -moz-column-width: 34em;
   margin: 0 0.5em;
 }
-.page_head {
+.page_head, .page_foot {
   width: 100%;
   border: none;
   border-collapse: collapse;
@@ -44,18 +43,33 @@ header {
   padding: 0.5ex 0;
   padding-bottom: 1ex;
 }
-.page_head_right {
-  text-align: right;
-}
+.page_head_right { text-align: right; }
+h1, h2 { text-align: center; }
 
-h1, h2 {
-  text-align: center;
-}
+.page_foot_mid { text-align: center; }
+.page_foot_right { text-align: right; }
 
 p {
   padding: 0.5ex 0;
   padding-left: 10em;
   margin: 0;
+}
+
+button {
+  position: relative;
+  text-align: inherit;
+  width: 100%;
+  background: #fff;
+  border: 1px #fff solid;
+}
+button:hover {
+  border-color: #ddd #bbb #bbb #ddd;
+  border-radius: 3px;
+  background: -moz-linear-gradient(0% 170% 90deg, #ccc, #fff);
+  background: -webkit-gradient(linear, 0% 0%, 0% 170%, from(#fff), to(#ccc));
+}
+button:active {
+  top: 1px;
 }
 
 /* make anchors behave like timestamps */

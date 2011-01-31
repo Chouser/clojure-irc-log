@@ -7,15 +7,18 @@ function resize() {
 
   // Insert initial per-column header and footer to establish their vertical
   // size so the page_count can be calculated correctly
-  $('#columns').before('<div id="headrow"></div>');
-  var header = $('.header');
-  $('#headrow').append(header);
+  $('#columns').before('<header><table class="page_head"><tr><td class="page_head_left"></td><td class="page_head_right"></td></tr></table></header>');
+  $('.page_head_left' ).append($('h1').contents().clone());
+  $('.page_head_right').append($('h2').contents().clone());
+  $('h1').css('margin-top', 0);
+  var page_head = $('.page_head').clone();
+  $('.page_head').css('visibility', 'hidden');
 
   $('#columns').after('<div id="footrow">footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer footer</div>');
-  $('#headrow').height($('#headrow').outerHeight());
+  $('header').height($('header').outerHeight());
   $('#columns').height(
       $('#frame').innerHeight()
-      - $('#headrow').outerHeight()
+      - $('header').outerHeight()
       - $('#footrow').outerHeight());
 
   // Measure widths
@@ -29,9 +32,8 @@ function resize() {
   $('#wide').css('width', doc_width + 'px');
 
   // Insert per-column headers and footers
-  $('#headrow').addClass('paged');
   for(var i = 2; i < page_count; ++i) {
-    $('#headrow').append(header.clone());
+    $('header').append(page_head.clone());
   }
 }
 

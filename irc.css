@@ -18,13 +18,8 @@ body {
   overflow: hidden;
 }
 
-#wide {
-  height: 100%;
-}
-
 #columns {
   background: #fff;
-  height: 90%;
   margin: 0 0.5em;
 }
 #columns.paged {
@@ -32,24 +27,29 @@ body {
   -moz-column-width: 34em;
 }
 
-.header {
+header {
+  -webkit-column-width: 34em;
+  -moz-column-width: 34em;
+  margin: 0 0.5em;
+}
+.page_head {
   width: 100%;
   border: none;
   border-collapse: collapse;
   table-layout: fixed;
 }
-#headrow {
-  -webkit-column-width: 34em;
-  -moz-column-width: 34em;
-  margin: 0 0.5em;
-}
-.lh, .rh {
-  font-size: 14pt;
-  margin: 0;
+.page_head_left, .page_head_right {
+  font-size: 12pt;
+  font-weight: bold;
   padding: 0.5ex 0;
+  padding-bottom: 1ex;
 }
-.rh {
+.page_head_right {
   text-align: right;
+}
+
+h1, h2 {
+  text-align: center;
 }
 
 p {

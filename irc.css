@@ -41,15 +41,24 @@ header, footer {
   table-layout: fixed;
 }
 .page_head_left, .page_head_right {
-  font-size: 12pt;
-  font-weight: bold;
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 10pt;
   padding: 0.5ex 0;
   padding-bottom: 1ex;
 }
 .page_head_right { text-align: right; }
-h1, h2 { text-align: center; }
+h1, h2 {
+  margin-left: 90pt;
+  font-family: Verdana,Arial,sans-serif;
+}
+h1 { font-size: 200%; margin-bottom: 0; }
+h2 { font-size: 150%; margin-top: 0; }
 
-.page_foot_mid { text-align: center; }
+.page_foot_mid {
+  text-align: center;
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 8pt;
+}
 .page_foot_right { text-align: right; }
 
 p {
@@ -77,12 +86,16 @@ button:active {
 
 /* make anchors behave like timestamps */
 a {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 8pt;
   float: left;
-  margin-left: -10em;
+  margin-left: -11em;
 }
 
 /* make nm anchors act like regular links */
 a.nm {
+  font-family: Georgia,Palatino,Times,"Times New Roman",serif;
+  font-size: 9pt;
   color: #00f;
   visibility: visible;
   float: none;
@@ -93,19 +106,30 @@ a.nm {
 a.nm:visited { color: purple; }
 
 b {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 8pt;
   float: left;
-  margin-left: -6.8em;
-  width: 6.3em;
-  font-weight: bold;
+  margin-left: -6.9em;
+  width: 5.8em;
+  font-weight: normal;
   text-align: right;
   overflow: hidden;
   white-space: nowrap;
+  color: #999;
 }
 
-em { font-style: normal; font-weight: bold; }
+.code { font-family: DejaVu Mono, monospace; }
+.bot { font-family: DejaVu Mono, monospace; color: #050; }
+
+em {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 8pt;
+  font-style: normal;
+}
 a { color: #aaa; visibility: hidden; text-decoration: none; }
 p:hover a { visibility: visible; }
-a:target, a.nh { color: #000; visibility: visible; }
+a.nh { color: #999; visibility: visible; }
+a:target { color: #000; visibility: visible; }
 p.bdfl b { color: #c00; }
 
 /* opera compatibility for <wbr> */

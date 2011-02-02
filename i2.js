@@ -60,8 +60,8 @@ function doanim() {
   var goal_px = anim.goal_page * window.col_width;
   var diff = goal_px - frame.scrollLeft;
   var pull_force = (diff == 0 ? 20 :
-                     (diff * diff * 0.008 + 20) * (diff / Math.abs(diff)));
-  var velocity = anim.velocity * 0.65 + pull_force;  // friction
+                     (diff * diff * 0.02 + 20) * (diff / Math.abs(diff)));
+  var velocity = anim.velocity * 0.5 + pull_force;  // friction
   if(Math.abs(velocity) < 20 && Math.abs(diff) < 2) {
     frame.scrollLeft = goal_px;
     velocity = 0;

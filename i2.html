@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <title>#clojure IRC log - May 31 2009</title>
-<link type="text/css" href="/irc.css" rel="stylesheet" />
+<link type="text/css" href="irc.css" rel="stylesheet" />
 </head>
 <body>
 <div id="frame">
@@ -14,129 +14,129 @@
 <p>
 <a class="nh" name="02:37">2:37
 </a> 
-<b>duck1123_: </b>Are there any good libraries for working with namespaced xml? Most of the ones I've seen weren't ns-aware.
+<b>duck1123_ </b>Are there any good libraries for working with namespaced xml? Most of the ones I've seen weren't ns-aware.
 </p><p><a class="nh" name="04:26">4:26</a> <b>* </b><em>cads_</em>  gave a clojure mini-lecture today to an interested crowd of two today at his clojure group
-</p><p><a class="nh" name="06:54">6:54</a> <b>cads_: </b>is there a limited count function which won't bottom on infinite sequences?
-</p><p><a class="nh" name="07:01">7:01</a> ,(defn count-max [coll n] (count (take n coll)))
-</p><p><a name="07:01a">7:01</a> <b>clojurebot: </b>DENIED
-</p><p><a name="07:02">7:02</a> <b>cads_: </b>,((fn count-max [coll n] (count (take n coll))) (repeat :hat) 1000000)
-</p><p><a name="07:02a">7:02</a> <b>clojurebot: </b>1000000
-</p><p><a name="07:03">7:03</a> <b>cads_: </b>,((fn count-max [coll n] (count (take n coll))) (repeat :hat 666) 1000000)
-</p><p><a name="07:03a">7:03</a> <b>clojurebot: </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.ClassCastException: clojure.lang.Keyword cannot be cast to java.lang.Number
-</p><p><a name="07:03b">7:03</a> <b>cads_: </b>,((fn count-max [coll n] (count (take n coll))) (repeat 666 :hat) 1000000)
-</p><p><a name="07:03c">7:03</a> <b>clojurebot: </b>666
-</p><p><a name="07:05">7:05</a> <b>cads_: </b>,((fn safe-count ([coll] safe-count 100000) ([coll n] (count (take n coll))) (repeat:hat)))
-</p><p><a name="07:05a">7:05</a> <b>clojurebot: </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
-</p><p><a name="07:05b">7:05</a> <b>cads_: </b>,((fn safe-count ([coll] (safe-count 100000)) ([coll n] (count (take n coll))) (repeat:hat)))
-</p><p><a name="07:05c">7:05</a> <b>clojurebot: </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
-</p><p><a name="07:05d">7:05</a> <b>cads_: </b>aww man
-</p><p><a name="07:05e">7:05</a> ,((fn safe-count ([coll] (safe-count coll 100000)) ([coll n] (count (take n coll))) (repeat:hat)))
-</p><p><a name="07:05f">7:05</a> <b>clojurebot: </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
-</p><p><a name="07:09">7:09</a> <b>cads_: </b>,((fn safe-count ([coll] (safe-count coll 100000)) ([coll n] (count (take n coll)))) (repeat :hat))
-</p><p><a name="07:09a">7:09</a> <b>clojurebot: </b>100000
-</p><p><a class="nh" name="07:55">7:55</a> <b>Chouser: </b>,((fn safe-count [coll &amp; [limit]] (if (counted? coll) (count coll) (count (take (or limit 100000) coll)))) (repeat :hat))
-</p><p><a name="07:55a">7:55</a> <b>clojurebot: </b>100000
-</p><p><a class="nh" name="08:08">8:08</a> <b>rhickey: </b>where would Clojure be? - <a href="http://gmarceau.qc.ca/blog/2009/05/speed-size-and-dependability-of.html" class="nm">http://<wbr />gmarceau.qc.ca/<wbr />blog/<wbr />2009/<wbr />05/<wbr />speed-size-and-dependability-of.html</a>
-</p><p><a name="08:13">8:13</a> <b>Chouser: </b>fascinating
+</p><p><a class="nh" name="06:54">6:54</a> <b>cads_ </b>is there a limited count function which won't bottom on infinite sequences?
+</p><p class="code"><a class="nh" name="07:01">7:01</a> ,(defn count-max [coll n] (count (take n coll)))
+</p><p class="bot"><a name="07:01a">7:01</a> <b>clojurebot </b>DENIED
+</p><p class="code"><a name="07:02">7:02</a> <b>cads_ </b>,((fn count-max [coll n] (count (take n coll))) (repeat :hat) 1000000)
+</p><p class="bot"><a name="07:02a">7:02</a> <b>clojurebot </b>1000000
+</p><p class="code"><a name="07:03">7:03</a> <b>cads_ </b>,((fn count-max [coll n] (count (take n coll))) (repeat :hat 666) 1000000)
+</p><p class="bot"><a name="07:03a">7:03</a> <b>clojurebot </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.ClassCastException: clojure.lang.Keyword cannot be cast to java.lang.Number
+</p><p class="code"><a name="07:03b">7:03</a> <b>cads_ </b>,((fn count-max [coll n] (count (take n coll))) (repeat 666 :hat) 1000000)
+</p><p class="bot"><a name="07:03c">7:03</a> <b>clojurebot </b>666
+</p><p class="code"><a name="07:05">7:05</a> <b>cads_ </b>,((fn safe-count ([coll] safe-count 100000) ([coll n] (count (take n coll))) (repeat:hat)))
+</p><p class="bot"><a name="07:05a">7:05</a> <b>clojurebot </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
+</p><p class="code"><a name="07:05b">7:05</a> <b>cads_ </b>,((fn safe-count ([coll] (safe-count 100000)) ([coll n] (count (take n coll))) (repeat:hat)))
+</p><p class="bot"><a name="07:05c">7:05</a> <b>clojurebot </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
+</p><p><a name="07:05d">7:05</a> <b>cads_ </b>aww man
+</p><p class="code"><a name="07:05e">7:05</a> ,((fn safe-count ([coll] (safe-count coll 100000)) ([coll n] (count (take n coll))) (repeat:hat)))
+</p><p class="bot"><a name="07:05f">7:05</a> <b>clojurebot </b>java.lang.RuntimeException: java.lang.RuntimeException: java.lang.IllegalArgumentException: Don't know how to create ISeq from: Symbol
+</p><p class="code"><a name="07:09">7:09</a> <b>cads_ </b>,((fn safe-count ([coll] (safe-count coll 100000)) ([coll n] (count (take n coll)))) (repeat :hat))
+</p><p class="bot"><a name="07:09a">7:09</a> <b>clojurebot </b>100000
+</p><p class="code"><a class="nh" name="07:55">7:55</a> <b>Chouser </b>,((fn safe-count [coll &amp; [limit]] (if (counted? coll) (count coll) (count (take (or limit 100000) coll)))) (repeat :hat))
+</p><p class="bot"><a name="07:55a">7:55</a> <b>clojurebot </b>100000
+</p><p class="bdfl"><a class="nh" name="08:08">8:08</a> <b>rhickey </b>where would Clojure be? - <a href="http://gmarceau.qc.ca/blog/2009/05/speed-size-and-dependability-of.html" class="nm">http://<wbr />gmarceau.qc.ca/<wbr />blog/<wbr />2009/<wbr />05/<wbr />speed-size-and-dependability-of.html</a>
+</p><p><a name="08:13">8:13</a> <b>Chouser </b>fascinating
 </p><p><a class="nh" name="08:21">8:21</a> <b>* </b><em>rhickey</em>  eyes the bottom left quadrant
-</p><p><a class="nh" name="08:33">8:33</a> <b>rhickey: </b>uh oh, new version of Arc on our tail: <a href="http://arclanguage.org/item?id=9383" class="nm">http://<wbr />arclanguage.org/<wbr />item?<wbr />id=9383</a> :)
-</p><p><a name="08:34">8:34</a> <b>wlr: </b>rhickey: wonder if this credible source has anything to offer the future of clojure (esp the bigraphical model):  <a href="http://www.cl.cam.ac.uk/~rm135/" class="nm">http://<wbr />www.cl.cam.ac.uk/<wbr />~rm135/</a>
-</p><p><a class="nh" name="08:40">8:40</a> <b>rhickey: </b>wlr: I'll let you know after I read: <a href="http://www.cambridge.org/uk/catalogue/catalogue.asp?isbn=9780521738330" class="nm">http://<wbr />www.cambridge.org/<wbr />uk/<wbr />catalogue/<wbr />catalogue.asp?<wbr />isbn=9780521738330</a>
-</p><p><a name="08:41">8:41</a> <b>wlr: </b>rhickey: You can preview portions there and also on Amazon
-</p><p><a name="08:41a">8:41</a> <b>rhickey: </b>wlr: ordered already
+</p><p class="bdfl"><a class="nh" name="08:33">8:33</a> <b>rhickey </b>uh oh, new version of Arc on our tail: <a href="http://arclanguage.org/item?id=9383" class="nm">http://<wbr />arclanguage.org/<wbr />item?<wbr />id=9383</a> :)
+</p><p><a name="08:34">8:34</a> <b>wlr </b>rhickey: wonder if this credible source has anything to offer the future of clojure (esp the bigraphical model):  <a href="http://www.cl.cam.ac.uk/~rm135/" class="nm">http://<wbr />www.cl.cam.ac.uk/<wbr />~rm135/</a>
+</p><p class="bdfl"><a class="nh" name="08:40">8:40</a> <b>rhickey </b>wlr: I'll let you know after I read: <a href="http://www.cambridge.org/uk/catalogue/catalogue.asp?isbn=9780521738330" class="nm">http://<wbr />www.cambridge.org/<wbr />uk/<wbr />catalogue/<wbr />catalogue.asp?<wbr />isbn=9780521738330</a>
+</p><p><a name="08:41">8:41</a> <b>wlr </b>rhickey: You can preview portions there and also on Amazon
+</p><p class="bdfl"><a name="08:41a">8:41</a> <b>rhickey </b>wlr: ordered already
 </p><p><a name="08:42">8:42</a> I'm skeptical
-</p><p><a name="08:45">8:45</a> <b>wlr: </b>I wasn't convinced one way or the other. Just thought you might like to pass it through your gifted filter.
-</p><p><a name="08:46">8:46</a> <b>rhickey: </b>Milner is awesome of course
+</p><p><a name="08:45">8:45</a> <b>wlr </b>I wasn't convinced one way or the other. Just thought you might like to pass it through your gifted filter.
+</p><p class="bdfl"><a name="08:46">8:46</a> <b>rhickey </b>Milner is awesome of course
 </p><p><a name="08:46a">8:46</a> bound to be interesting
-</p><p><a name="08:46b">8:46</a> <b>Lomono: </b>Robin Milner :3
-</p><p><a name="08:49">8:49</a> <b>rys: </b>Speaking of books, is buying the pragprog Clojure book an indirect way to donate to the project?
-</p><p><a name="08:51">8:51</a> <b>rhickey: </b>rys: does nothing for me, helps Clojure by rewarding pragprog for taking the risk with it and Stuart for his effort
-</p><p><a name="08:52">8:52</a> <b>rys: </b>Ah, cool
+</p><p><a name="08:46b">8:46</a> <b>Lomono </b>Robin Milner :3
+</p><p><a name="08:49">8:49</a> <b>rys </b>Speaking of books, is buying the pragprog Clojure book an indirect way to donate to the project?
+</p><p class="bdfl"><a name="08:51">8:51</a> <b>rhickey </b>rys: does nothing for me, helps Clojure by rewarding pragprog for taking the risk with it and Stuart for his effort
+</p><p><a name="08:52">8:52</a> <b>rys </b>Ah, cool
 </p><p><a name="08:53">8:53</a> I'll coerce paypal into life later on then
-</p><p><a name="08:54">8:54</a> <b>rhickey: </b>rys: thanks!
-</p><p><a name="08:54a">8:54</a> <b>rys: </b>Ah, thank you for the language :)
-</p><p><a name="08:54b">8:54</a> <b>Chouser: </b>rhickey (theoretically) gets a percentage of revenue from <a href="http://www.zazzle.com/clojure" class="nm">http://<wbr />www.zazzle.com/<wbr />clojure</a>
+</p><p class="bdfl"><a name="08:54">8:54</a> <b>rhickey </b>rys: thanks!
+</p><p><a name="08:54a">8:54</a> <b>rys </b>Ah, thank you for the language :)
+</p><p><a name="08:54b">8:54</a> <b>Chouser </b>rhickey (theoretically) gets a percentage of revenue from <a href="http://www.zazzle.com/clojure" class="nm">http://<wbr />www.zazzle.com/<wbr />clojure</a>
 </p><p><a name="08:55">8:55</a> a small percentage.  I'd tell you how much if I could find the number...
-</p><p><a name="08:55a">8:55</a> <b>rys: </b>A programmer can always do with some new threads ;)
-</p><p><a name="08:56">8:56</a> <b>Chouser: </b>ah, 10% it looks like
-</p><p><a name="08:56a">8:56</a> <b>rys: </b>lol @ the slogans on the shirts
-</p><p><a name="08:58">8:58</a> <b>Lomono: </b>any updates from the people trying to get Clojure into that shootout.alioth.debian.org?
-</p><p><a name="08:58a">8:58</a> <b>rhickey: </b>Lomono: are there people doing that?
-</p><p><a name="08:59">8:59</a> <b>Lomono: </b>there're sporadic postings on the mailing list last I checked
+</p><p><a name="08:55a">8:55</a> <b>rys </b>A programmer can always do with some new threads ;)
+</p><p><a name="08:56">8:56</a> <b>Chouser </b>ah, 10% it looks like
+</p><p><a name="08:56a">8:56</a> <b>rys </b>lol @ the slogans on the shirts
+</p><p><a name="08:58">8:58</a> <b>Lomono </b>any updates from the people trying to get Clojure into that shootout.alioth.debian.org?
+</p><p class="bdfl"><a name="08:58a">8:58</a> <b>rhickey </b>Lomono: are there people doing that?
+</p><p><a name="08:59">8:59</a> <b>Lomono </b>there're sporadic postings on the mailing list last I checked
 </p><p><a class="nh" name="09:01">9:01</a> I just read &quot;The speed, size and dependability of programming languages&quot;, and I thought it was odd that Clojure was missing from the analysis
 </p><p><a name="09:01a">9:01</a> <a href="http://gmarceau.qc.ca/blog/2009/05/speed-size-and-dependability-of.html" class="nm">http://<wbr />gmarceau.qc.ca/<wbr />blog/<wbr />2009/<wbr />05/<wbr />speed-size-and-dependability-of.html</a>
-</p><p><a class="nh" name="09:25">9:25</a> <b>durka42: </b>well, we don't have any entries in the shootout
+</p><p><a class="nh" name="09:25">9:25</a> <b>durka42 </b>well, we don't have any entries in the shootout
 </p><p><a name="09:25a">9:25</a> perhaps this should be changed
 </p><p><a class="nh" name="09:31">9:31</a> i wonder who you email to ask for them to include a new language
-</p><p><a class="nh" name="09:41">9:41</a> <b>Lomono: </b>durka42: you would need to register at their forum and create a new topic <a href="https://alioth.debian.org/forum/forum.php?forum_id=999" class="nm">https://<wbr />alioth.debian.org/<wbr />forum/<wbr />forum.php?<wbr />forum_id=999</a>
+</p><p><a class="nh" name="09:41">9:41</a> <b>Lomono </b>durka42: you would need to register at their forum and create a new topic <a href="https://alioth.debian.org/forum/forum.php?forum_id=999" class="nm">https://<wbr />alioth.debian.org/<wbr />forum/<wbr />forum.php?<wbr />forum_id=999</a>
 </p><p><a name="09:42">9:42</a> <b>* </b><em>durka42</em>  grumbles about invalid security certificates
-</p><p><a name="09:42a">9:42</a> <b>Lomono: </b>(one of?) the caveat of participating in the alioth benchmark is [we ask that contributed programs not only give the correct result, but also use the same algorithm to calculate that result.]
+</p><p><a name="09:42a">9:42</a> <b>Lomono </b>(one of?) the caveat of participating in the alioth benchmark is [we ask that contributed programs not only give the correct result, but also use the same algorithm to calculate that result.]
 </p><p><a name="09:43">9:43</a> I'd recommend that you give the FAQ a quick scan <a href="http://shootout.alioth.debian.org/u32q/faq.php" class="nm">http://<wbr />shootout.alioth.debian.org/<wbr />u32q/<wbr />faq.php</a>
-</p><p><a name="09:43a">9:43</a> <b>durka42: </b>i did
+</p><p><a name="09:43a">9:43</a> <b>durka42 </b>i did
 </p><p><a name="09:43b">9:43</a> i'll create a topic
 </p><p><a name="09:47">9:47</a> ok, that would be the first time i've gotten an account verification email with instructions that don't work
-</p><p><a name="09:47a">9:47</a> <b>Lomono: </b>:[
-</p><p><a class="nh" name="11:29">11:29</a> <b>rhickey_: </b>whither github?
-</p><p><a name="11:29a">11:29</a> <b>clojurebot: </b>github is git://github.com/kevinoneill/clojure.git
-</p><p><a name="11:32">11:32</a> <b>Chouser: </b>wfm
-</p><p><a name="11:34">11:34</a> <b>rys: </b>Is that repo considered clojure's master as far as git goes?  I've been using svn from googlecode, but I'm more comfortable with git
-</p><p><a name="11:35">11:35</a> <b>Chouser: </b>rys: I use git-svn with the googlecode repo.  That's where rhickey_ commits, so it's always going to be the most up to date.
-</p><p><a name="11:36">11:36</a> <b>rys: </b>Ah, great
-</p><p><a name="11:38">11:38</a> <b>rhickey_: </b>is there a notion of project members on github?
-</p><p><a name="11:39">11:39</a> <b>quidnunc: </b>git svn is going to be much slower than pulling from git mirror.
-</p><p><a name="11:39a">11:39</a> <b>rys: </b>rhickey_: you can add contributors to a repo
+</p><p><a name="09:47a">9:47</a> <b>Lomono </b>:[
+</p><p class="bdfl"><a class="nh" name="11:29">11:29</a> <b>rhickey_ </b>whither github?
+</p><p class="bot"><a name="11:29a">11:29</a> <b>clojurebot </b>github is git://github.com/kevinoneill/clojure.git
+</p><p><a name="11:32">11:32</a> <b>Chouser </b>wfm
+</p><p><a name="11:34">11:34</a> <b>rys </b>Is that repo considered clojure's master as far as git goes?  I've been using svn from googlecode, but I'm more comfortable with git
+</p><p><a name="11:35">11:35</a> <b>Chouser </b>rys: I use git-svn with the googlecode repo.  That's where rhickey_ commits, so it's always going to be the most up to date.
+</p><p><a name="11:36">11:36</a> <b>rys </b>Ah, great
+</p><p class="bdfl"><a name="11:38">11:38</a> <b>rhickey_ </b>is there a notion of project members on github?
+</p><p><a name="11:39">11:39</a> <b>quidnunc </b>git svn is going to be much slower than pulling from git mirror.
+</p><p><a name="11:39a">11:39</a> <b>rys </b>rhickey_: you can add contributors to a repo
 </p><p><a name="11:39b">11:39</a> So they have commit privileges
-</p><p><a name="11:40">11:40</a> <b>Chouser: </b>&quot;repository collaborators&quot; in the Admin tab of the project
+</p><p><a name="11:40">11:40</a> <b>Chouser </b>&quot;repository collaborators&quot; in the Admin tab of the project
 </p><p><a name="11:42">11:42</a> <b>* </b><em>rhickey_</em>  doesn't see Admin tab
-</p><p><a name="11:44">11:44</a> <b>rys: </b>Maybe only kevin can add new collaborators, since it's his repository?
-</p><p><a name="11:45">11:45</a> <b>Lomono: </b>^
+</p><p><a name="11:44">11:44</a> <b>rys </b>Maybe only kevin can add new collaborators, since it's his repository?
+</p><p><a name="11:45">11:45</a> <b>Lomono </b>^
 </p><p><a name="11:45a">11:45</a> <a href="http://github.com/guides/managing-collaborators" class="nm">http://<wbr />github.com/<wbr />guides/<wbr />managing-collaborators</a>
-</p><p><a name="11:45b">11:45</a> <b>rhickey_: </b>rys: I'm looking at my repo
-</p><p><a name="11:45c">11:45</a> <b>quidnunc: </b>There is also gitorious.org which is AGPLv3
-</p><p><a name="11:48">11:48</a> <b>rhickey_: </b>ah, see it in Safari but not Camino - aargh
-</p><p><a name="11:49">11:49</a> <b>rys: </b>heh
-</p><p><a name="11:51">11:51</a> <b>Chouser: </b>if my window is too narrow, scrolling horizontally doesn't show any more tabs -- just blank area (firefox)
+</p><p class="bdfl"><a name="11:45b">11:45</a> <b>rhickey_ </b>rys: I'm looking at my repo
+</p><p><a name="11:45c">11:45</a> <b>quidnunc </b>There is also gitorious.org which is AGPLv3
+</p><p class="bdfl"><a name="11:48">11:48</a> <b>rhickey_ </b>ah, see it in Safari but not Camino - aargh
+</p><p><a name="11:49">11:49</a> <b>rys </b>heh
+</p><p><a name="11:51">11:51</a> <b>Chouser </b>if my window is too narrow, scrolling horizontally doesn't show any more tabs -- just blank area (firefox)
 </p><p><a class="nh" name="11:58">11:58</a> hm, same behavior in chromium.
-</p><p><a class="nh" name="12:01">12:01</a> <b>alinp: </b>hi
+</p><p><a class="nh" name="12:01">12:01</a> <b>alinp </b>hi
 </p><p><a name="12:01a">12:01</a> user=&gt; (use clojure.contrib.server-socket)
 </p><p><a name="12:01b">12:01</a> java.lang.ClassNotFoundException: clojure.contrib.server-socket (NO_SOURCE_FILE:1)
 </p><p><a name="12:01c">12:01</a>   828 s003  Ss+    0:01.40 /usr/bin/java -cp /Users/alin/apps/clojure-1.0/clojure-1.0.0.jar:/Users/alin/apps/clojure-contrib/clojure-contrib.jar clojure.main
-</p><p><a name="12:01d">12:01</a> <b>Chouser: </b>alinp: you need to quote the arg
+</p><p><a name="12:01d">12:01</a> <b>Chouser </b>alinp: you need to quote the arg
 </p><p><a name="12:01e">12:01</a> (use 'foo)
-</p><p><a name="12:01f">12:01</a> <b>alinp: </b>so, I started the repl also including the clojure-contrib
+</p><p><a name="12:01f">12:01</a> <b>alinp </b>so, I started the repl also including the clojure-contrib
 </p><p><a name="12:02">12:02</a> the :require doesn't work in repl ?
-</p><p><a name="12:02a">12:02</a> <b>Chouser: </b>note that's different from when used in the 'ns' macro, where you would say: (ns bar (:use foo))
+</p><p><a name="12:02a">12:02</a> <b>Chouser </b>note that's different from when used in the 'ns' macro, where you would say: (ns bar (:use foo))
 </p><p><a name="12:02b">12:02</a> 'use' and 'require' are plain functions that take symbols as arguments, so you need to quote them.
-</p><p><a name="12:02c">12:02</a> <b>alinp: </b>I see
+</p><p><a name="12:02c">12:02</a> <b>alinp </b>I see
 </p><p><a name="12:02d">12:02</a> thanks
-</p><p><a name="12:02e">12:02</a> <b>Chouser: </b>the 'ns' macro does that quoting for you when used with :use and :require
-</p><p><a name="12:06">12:06</a> <b>alinp: </b>(ns test)
+</p><p><a name="12:02e">12:02</a> <b>Chouser </b>the 'ns' macro does that quoting for you when used with :use and :require
+</p><p><a name="12:06">12:06</a> <b>alinp </b>(ns test)
 </p><p><a name="12:06a">12:06</a> (defn test [] ())
 </p><p><a name="12:07">12:07</a> Exception in thread &quot;main&quot; java.lang.Exception: Name conflict, can't def test because namespace: test refers to:#'clojure.core/test (server.clj:3)
 </p><p><a name="12:07a">12:07</a> same result if I'm doing: (ns my.test)
 </p><p><a name="12:07b">12:07</a> what I'm missing here ?
-</p><p><a name="12:07c">12:07</a> <b>Chouser: </b>by default, the 'ns' macro brings into your new namespace all the names from clojure.core, which includes a function named &quot;test&quot;
+</p><p><a name="12:07c">12:07</a> <b>Chouser </b>by default, the 'ns' macro brings into your new namespace all the names from clojure.core, which includes a function named &quot;test&quot;
 </p><p><a name="12:08">12:08</a> so that you can say + or map instead of clojure.core/+ and clojure.core/map
 </p><p><a name="12:08a">12:08</a> but that also means you can't define your own functions (vars, really) with those same names.
-</p><p><a name="12:09">12:09</a> <b>alinp: </b>can I exclude functions from being loaded ?
+</p><p><a name="12:09">12:09</a> <b>alinp </b>can I exclude functions from being loaded ?
 </p><p><a name="12:09a">12:09</a> like haskell for instance
-</p><p><a name="12:09b">12:09</a> <b>Chouser: </b>so you can either exclude certain names from core when you do your 'ns' (see the :refer-clojure option), or name your function differently (which is what I would generally recommend) like (defn my-test [] ())
-</p><p><a name="12:09c">12:09</a> <b>alinp: </b>like you said, + or map ... to make them my own ... but to exclude from core
+</p><p><a name="12:09b">12:09</a> <b>Chouser </b>so you can either exclude certain names from core when you do your 'ns' (see the :refer-clojure option), or name your function differently (which is what I would generally recommend) like (defn my-test [] ())
+</p><p><a name="12:09c">12:09</a> <b>alinp </b>like you said, + or map ... to make them my own ... but to exclude from core
 </p><p><a name="12:10">12:10</a> I see
 </p><p><a name="12:10a">12:10</a> thanks, I'll look into this
-</p><p><a name="12:13">12:13</a> <b>chrizel: </b>I wonder what would be the easiest functional way to move an item in a vector to a different position inside the vector - can't find a function for this
+</p><p><a name="12:13">12:13</a> <b>chrizel </b>I wonder what would be the easiest functional way to move an item in a vector to a different position inside the vector - can't find a function for this
 </p><p><a name="12:18">12:18</a> Maybe lists will be better suited for this -- or some combination with subvec
-</p><p><a class="nh" name="12:40">12:40</a> <b>Chouser: </b>chrizel: vectors don't shrink or grow in the middle well.  swap would be fast, but I suspect that's not what you want.
+</p><p><a class="nh" name="12:40">12:40</a> <b>Chouser </b>chrizel: vectors don't shrink or grow in the middle well.  swap would be fast, but I suspect that's not what you want.
 </p><p><a class="nh" name="14:37">14:37</a> It would be nice if there were a difference between non-private vars and vars that are refer'ed by default.
 </p><p><a name="14:38">14:38</a> mainly for functions that I want to call from public macros
-</p><p><a class="nh" name="16:05">16:05</a> <b>rhickey_: </b>Chouser: yes
+</p><p class="bdfl"><a class="nh" name="16:05">16:05</a> <b>rhickey_ </b>Chouser: yes
 </p><p><a name="16:06">16:06</a> Chouser: does xml-&gt; require you create your own zipper?
-</p><p><a class="nh" name="16:30">16:30</a> <b>Chouser: </b>rhickey_: yes
+</p><p><a class="nh" name="16:30">16:30</a> <b>Chouser </b>rhickey_: yes
 </p><p><a name="16:30a">16:30</a> rhickey_: I think zip-filter.xml may have been eclipsed by enlive
 </p><p><a name="16:31">16:31</a> I haven't tried it yet, but cgrand looked at zip-filter, used it some, and then wrote something new.  It's reasonable to assume what he created is better. :-)
-</p><p><a name="16:31a">16:31</a> <b>rhickey_: </b>yeah, does its select do everything zip-filter did?
+</p><p class="bdfl"><a name="16:31a">16:31</a> <b>rhickey_ </b>yeah, does its select do everything zip-filter did?
 </p><p><a name="16:32">16:32</a> <b>* </b><em>rhickey_</em>  trying to get some chouser code into the contrib demo
-</p><p><a name="16:34">16:34</a> <b>Chouser: </b>I don't know.  The one feature that was most important for me with zip-filter was the ability to drop in straight clojure filters in the middle, to keep it open
+</p><p><a name="16:34">16:34</a> <b>Chouser </b>I don't know.  The one feature that was most important for me with zip-filter was the ability to drop in straight clojure filters in the middle, to keep it open
 </p><p><a name="16:35">16:35</a> I wasn't sure if enlive did that or not, but I saw in a blog recently that cgrand had that goal as well.
 </p><p><a name="16:35a">16:35</a> As soon as I try out some enlive stuff, I expect (hope?) to be able to deprecate zip-filter
 </p><p><a name="16:36">16:36</a> I appreciate the effort, but I don't know if there's much I've done that looks that great.
@@ -144,113 +144,113 @@
 </p><p><a name="16:37">16:37</a> I'm doing fun stuff with JNA and libc.  I nearly have inotify (linux filesystem change notification thing) working.
 </p><p><a name="16:37a">16:37</a> hm, but you can't demo that on a mac.
 </p><p><a class="nh" name="18:14">18:14</a> <b>* </b><em>rhickey_</em>  practicing for script bowl - wow 4 minutes is incredibly short!!
-</p><p><a class="nh" name="18:25">18:25</a> <b>durka42: </b>script bowl?
-</p><p><a class="nh" name="18:31">18:31</a> <b>rhickey_: </b>durka42: at java one
-</p><p><a name="18:32">18:32</a> <b>durka42: </b>~script bowl is <a href="http://weblogs.java.net/blog/robc/archive/2009/04/javaone_2009_sc.html" class="nm">http://<wbr />weblogs.java.net/<wbr />blog/<wbr />robc/<wbr />archive/<wbr />2009/<wbr />04/<wbr />javaone_2009_sc.html</a>
-</p><p><a name="18:32a">18:32</a> <b>clojurebot: </b>Roger.
-</p><p><a name="18:36">18:36</a> <b>powr-toc: </b>Is it possible to store a mutable java object in an agent?  If the cost of refactoring it to be mutable was too high, what would be the best thing to do?  Wrap it in a layer that ensures all mutations generate a new object; to enforce identity semantics?? Is there anything else I need do?
-</p><p><a name="18:37">18:37</a> <b>rhickey_: </b>powr-toc: are you going to mutate it?
-</p><p><a name="18:37a">18:37</a> <b>powr-toc: </b>rhickey_: yeah
+</p><p><a class="nh" name="18:25">18:25</a> <b>durka42 </b>script bowl?
+</p><p class="bdfl"><a class="nh" name="18:31">18:31</a> <b>rhickey_ </b>durka42: at java one
+</p><p><a name="18:32">18:32</a> <b>durka42 </b>~script bowl is <a href="http://weblogs.java.net/blog/robc/archive/2009/04/javaone_2009_sc.html" class="nm">http://<wbr />weblogs.java.net/<wbr />blog/<wbr />robc/<wbr />archive/<wbr />2009/<wbr />04/<wbr />javaone_2009_sc.html</a>
+</p><p class="bot"><a name="18:32a">18:32</a> <b>clojurebot </b>Roger.
+</p><p><a name="18:36">18:36</a> <b>powr-toc </b>Is it possible to store a mutable java object in an agent?  If the cost of refactoring it to be mutable was too high, what would be the best thing to do?  Wrap it in a layer that ensures all mutations generate a new object; to enforce identity semantics?? Is there anything else I need do?
+</p><p class="bdfl"><a name="18:37">18:37</a> <b>rhickey_ </b>powr-toc: are you going to mutate it?
+</p><p><a name="18:37a">18:37</a> <b>powr-toc </b>rhickey_: yeah
 </p><p><a name="18:37b">18:37</a> via the function to send
-</p><p><a name="18:38">18:38</a> <b>rhickey_: </b>then people reading the agent will be messed up by that
+</p><p class="bdfl"><a name="18:38">18:38</a> <b>rhickey_ </b>then people reading the agent will be messed up by that
 </p><p><a name="18:38a">18:38</a> basically a mess
 </p><p><a name="18:38b">18:38</a> mutable things need locks
-</p><p><a name="18:38c">18:38</a> <b>powr-toc: </b>rhickey_: is that because of identity equality?
-</p><p><a name="18:39">18:39</a> <b>rhickey_: </b>it's just the normal dangers of inconsistency and race conditions
-</p><p><a name="18:39a">18:39</a> <b>powr-toc: </b>ok sorry... being stupid... I think I get it
+</p><p><a name="18:38c">18:38</a> <b>powr-toc </b>rhickey_: is that because of identity equality?
+</p><p class="bdfl"><a name="18:39">18:39</a> <b>rhickey_ </b>it's just the normal dangers of inconsistency and race conditions
+</p><p><a name="18:39a">18:39</a> <b>powr-toc </b>ok sorry... being stupid... I think I get it
 </p><p><a name="18:40">18:40</a> yeah, it's all the classic visibility problems etc...
 </p><p><a name="18:43">18:43</a> are there any clojure idioms for sane locking?  Is it typically best to use the java5 java.util.concurrent.lock's or the synchronized key word?
-</p><p><a name="18:43a">18:43</a> <b>hiredman: </b>,(doc locking)
-</p><p><a name="18:44">18:44</a> <b>clojurebot: </b>&quot;([x &amp; body]); Executes exprs in an implicit do, while holding the monitor of x. Will release the monitor of x in all circumstances.&quot;
-</p><p><a name="18:44a">18:44</a> <b>hiredman: </b>dunno how sane t hat is
-</p><p><a name="18:44b">18:44</a> <b>powr-toc: </b>ooo cool
+</p><p class="code"><a name="18:43a">18:43</a> <b>hiredman </b>,(doc locking)
+</p><p class="bot"><a name="18:44">18:44</a> <b>clojurebot </b>&quot;([x &amp; body]); Executes exprs in an implicit do, while holding the monitor of x. Will release the monitor of x in all circumstances.&quot;
+</p><p><a name="18:44a">18:44</a> <b>hiredman </b>dunno how sane t hat is
+</p><p><a name="18:44b">18:44</a> <b>powr-toc </b>ooo cool
 </p><p><a name="18:44c">18:44</a> though it assumes the monitor is the object right?
-</p><p><a name="18:45">18:45</a> <b>hiredman: </b>eh?
-</p><p><a name="18:45a">18:45</a> <b>rhickey_: </b><a href="http://www.amazon.com/gp/product/0321349601?ie=UTF8&amp;tag=none0b69&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0321349601" class="nm">http://<wbr />www.amazon.com/<wbr />gp/<wbr />product/<wbr />0321349601?<wbr />ie=UTF8&amp;tag=none0b69&amp;linkCode=as2&amp;camp=1789&amp;creati<wbr />ve=9325&amp;creativeASIN=0321349601</a>
-</p><p><a name="18:45b">18:45</a> <b>powr-toc: </b>hiredman: In java monitor's are implemented in Object... so it's common to synchronize on the object itself... though that's not always what you want... particularly if you want finer grained locking
-</p><p><a name="18:45c">18:45</a> <b>clojurebot: </b>?
-</p><p><a name="18:46">18:46</a> <b>stuhood: </b>powr-toc: it is exactly like a synchronized block.
-</p><p><a name="18:46a">18:46</a> <b>Chousuke: </b>clojurebot has a caffeine addiction it seems.
-</p><p><a name="18:46b">18:46</a> <b>stuhood: </b>whatever object you choose to synchronize on provides the monitor
-</p><p><a name="18:46c">18:46</a> <b>powr-toc: </b>stuhood: ok... so it takes the monitor...
-</p><p><a name="18:46d">18:46</a> <b>hiredman: </b>yes
-</p><p><a name="18:46e">18:46</a> <b>powr-toc: </b>cool
+</p><p><a name="18:45">18:45</a> <b>hiredman </b>eh?
+</p><p class="bdfl"><a name="18:45a">18:45</a> <b>rhickey_ </b><a href="http://www.amazon.com/gp/product/0321349601?ie=UTF8&amp;tag=none0b69&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0321349601" class="nm">http://<wbr />www.amazon.com/<wbr />gp/<wbr />product/<wbr />0321349601?<wbr />ie=UTF8&amp;tag=none0b69&amp;linkCode=as2&amp;camp=1789&amp;creati<wbr />ve=9325&amp;creativeASIN=0321349601</a>
+</p><p><a name="18:45b">18:45</a> <b>powr-toc </b>hiredman: In java monitor's are implemented in Object... so it's common to synchronize on the object itself... though that's not always what you want... particularly if you want finer grained locking
+</p><p class="bot"><a name="18:45c">18:45</a> <b>clojurebot </b>?
+</p><p><a name="18:46">18:46</a> <b>stuhood </b>powr-toc: it is exactly like a synchronized block.
+</p><p><a name="18:46a">18:46</a> <b>Chousuke </b>clojurebot has a caffeine addiction it seems.
+</p><p><a name="18:46b">18:46</a> <b>stuhood </b>whatever object you choose to synchronize on provides the monitor
+</p><p><a name="18:46c">18:46</a> <b>powr-toc </b>stuhood: ok... so it takes the monitor...
+</p><p><a name="18:46d">18:46</a> <b>hiredman </b>yes
+</p><p><a name="18:46e">18:46</a> <b>powr-toc </b>cool
 </p><p><a name="18:48">18:48</a> I'm being very slow today... asking lots of stupid questions I'd know the answer to if I just engaged my brain...
-</p><p><a name="19:51">19:51</a> <b>ataggart: </b>(#(+ %&amp;) 123)
-</p><p><a name="19:51a">19:51</a> ,(#(+ %&amp;) 123)
-</p><p><a name="19:51b">19:51</a> <b>clojurebot: </b>java.lang.ClassCastException
-</p><p><a name="19:52">19:52</a> <b>ataggart: </b>,(#(+ 5 %&amp;) 1 2 3)
-</p><p><a name="19:52a">19:52</a> <b>clojurebot: </b>java.lang.ClassCastException: clojure.lang.ArraySeq cannot be cast to java.lang.Number
-</p><p><a name="19:53">19:53</a> <b>ataggart: </b>((partial + 5) 1 2 3)
-</p><p><a name="19:53a">19:53</a> <b>Chousuke: </b>need apply
-</p><p><a name="19:53b">19:53</a> <b>ataggart: </b>ah
+</p><p><a name="19:51">19:51</a> <b>ataggart </b>(#(+ %&amp;) 123)
+</p><p class="code"><a name="19:51a">19:51</a> ,(#(+ %&amp;) 123)
+</p><p class="bot"><a name="19:51b">19:51</a> <b>clojurebot </b>java.lang.ClassCastException
+</p><p class="code"><a name="19:52">19:52</a> <b>ataggart </b>,(#(+ 5 %&amp;) 1 2 3)
+</p><p class="bot"><a name="19:52a">19:52</a> <b>clojurebot </b>java.lang.ClassCastException: clojure.lang.ArraySeq cannot be cast to java.lang.Number
+</p><p><a name="19:53">19:53</a> <b>ataggart </b>((partial + 5) 1 2 3)
+</p><p><a name="19:53a">19:53</a> <b>Chousuke </b>need apply
+</p><p><a name="19:53b">19:53</a> <b>ataggart </b>ah
 </p><p><a name="19:53c">19:53</a> thx
-</p><p><a name="19:53d">19:53</a> <b>Chousuke: </b>though with partial it ought to work
-</p><p><a name="19:53e">19:53</a> <b>ataggart: </b>,((partial + 5) 1 2 3)
-</p><p><a name="19:53f">19:53</a> <b>clojurebot: </b>11
-</p><p><a name="19:53g">19:53</a> <b>ataggart: </b>hmm
-</p><p><a name="19:53h">19:53</a> <b>Chousuke: </b>but partial isn't the same as #() with a %&amp;
-</p><p><a name="19:54">19:54</a> <b>ataggart: </b>partial returns a fn, and #() returns a fn, so why do they behave differently?
-</p><p><a name="19:54a">19:54</a> <b>Chousuke: </b>partial probably uses apply internaly.
+</p><p><a name="19:53d">19:53</a> <b>Chousuke </b>though with partial it ought to work
+</p><p class="code"><a name="19:53e">19:53</a> <b>ataggart </b>,((partial + 5) 1 2 3)
+</p><p class="bot"><a name="19:53f">19:53</a> <b>clojurebot </b>11
+</p><p><a name="19:53g">19:53</a> <b>ataggart </b>hmm
+</p><p><a name="19:53h">19:53</a> <b>Chousuke </b>but partial isn't the same as #() with a %&amp;
+</p><p><a name="19:54">19:54</a> <b>ataggart </b>partial returns a fn, and #() returns a fn, so why do they behave differently?
+</p><p><a name="19:54a">19:54</a> <b>Chousuke </b>partial probably uses apply internaly.
 </p><p><a name="19:54b">19:54</a> +l
-</p><p><a name="19:55">19:55</a> <b>ataggart: </b>,(map #(+ 5 %&amp;) 1 2 3)
-</p><p><a name="19:55a">19:55</a> <b>clojurebot: </b>java.lang.IllegalArgumentException: Don't know how to create ISeq from: Integer
-</p><p><a name="19:55b">19:55</a> <b>ataggart: </b>,(map #(+ 5 %&amp;) [1 2 3])
-</p><p><a name="19:55c">19:55</a> <b>clojurebot: </b>java.lang.ClassCastException: clojure.lang.ArraySeq cannot be cast to java.lang.Number
-</p><p><a name="19:55d">19:55</a> <b>Chousuke: </b>%&amp; is a seq
-</p><p><a name="19:55e">19:55</a> ,(#(do %&amp;) 1)
-</p><p><a name="19:55f">19:55</a> <b>clojurebot: </b>(1)
-</p><p><a name="19:55g">19:55</a> <b>rhickey_: </b>,(+ 5 '(1 2 3))
-</p><p><a name="19:55h">19:55</a> <b>clojurebot: </b>java.lang.ClassCastException: clojure.lang.PersistentList cannot be cast to java.lang.Number
-</p><p><a name="19:56">19:56</a> <b>ataggart: </b>so then #() with &amp;% really isn't a good substitute for patial
+</p><p class="code"><a name="19:55">19:55</a> <b>ataggart </b>,(map #(+ 5 %&amp;) 1 2 3)
+</p><p class="bot"><a name="19:55a">19:55</a> <b>clojurebot </b>java.lang.IllegalArgumentException: Don't know how to create ISeq from: Integer
+</p><p class="code"><a name="19:55b">19:55</a> <b>ataggart </b>,(map #(+ 5 %&amp;) [1 2 3])
+</p><p class="bot"><a name="19:55c">19:55</a> <b>clojurebot </b>java.lang.ClassCastException: clojure.lang.ArraySeq cannot be cast to java.lang.Number
+</p><p><a name="19:55d">19:55</a> <b>Chousuke </b>%&amp; is a seq
+</p><p class="code"><a name="19:55e">19:55</a> ,(#(do %&amp;) 1)
+</p><p class="bot"><a name="19:55f">19:55</a> <b>clojurebot </b>(1)
+</p><p class="code"><a name="19:55g">19:55</a> <b>rhickey_ </b>,(+ 5 '(1 2 3))
+</p><p class="bot"><a name="19:55h">19:55</a> <b>clojurebot </b>java.lang.ClassCastException: clojure.lang.PersistentList cannot be cast to java.lang.Number
+</p><p><a name="19:56">19:56</a> <b>ataggart </b>so then #() with &amp;% really isn't a good substitute for patial
 </p><p><a name="19:56a">19:56</a> *partial
-</p><p><a name="19:56b">19:56</a> <b>rhickey_: </b>that's what you are saying with %&amp;
-</p><p><a name="19:56c">19:56</a> <b>Chousuke: </b>partial is (fn [x] #(apply + x %&amp;))
+</p><p class="bdfl"><a name="19:56b">19:56</a> <b>rhickey_ </b>that's what you are saying with %&amp;
+</p><p><a name="19:56c">19:56</a> <b>Chousuke </b>partial is (fn [x] #(apply + x %&amp;))
 </p><p><a name="19:56d">19:56</a> or something similar
 </p><p><a name="19:56e">19:56</a> (#(apply + 1 %&amp;) 1 2 3 4)
-</p><p><a name="19:56f">19:56</a> <b>rhickey_: </b>partial knows the consumer of the args, with #() they could go anywhere - a consumer might want the seq, not applied
-</p><p><a name="19:56g">19:56</a> <b>Chousuke: </b>,(#(apply + 1 %&amp;) 1 2 3 4)
-</p><p><a name="19:56h">19:56</a> <b>clojurebot: </b>11
-</p><p><a name="19:57">19:57</a> <b>ataggart: </b>interesting
-</p><p><a name="19:57a">19:57</a> <b>rhickey_: </b>,(#(count %&amp;) 1 2 3)
-</p><p><a name="19:57b">19:57</a> <b>clojurebot: </b>3
-</p><p><a class="nh" name="20:38">20:38</a> <b>Chouser: </b>oh, vars still have :line 0 in their metadata
-</p><p><a name="20:43">20:43</a> <b>slashus2: </b>Chouser: When do they have :line 0 in their metadata?
-</p><p><a name="20:43a">20:43</a> <b>Chouser: </b>,(:line ^#'map)
-</p><p><a name="20:43b">20:43</a> <b>clojurebot: </b>1494
-</p><p><a name="20:44">20:44</a> <b>Chouser: </b>hm.
-</p><p><a name="20:44a">20:44</a> <b>slashus2: </b>They seem to have the correct line when I tried it in some code.
-</p><p><a name="20:45">20:45</a> <b>Chouser: </b>ah, I forgot my clojure working copy regressed.
+</p><p class="bdfl"><a name="19:56f">19:56</a> <b>rhickey_ </b>partial knows the consumer of the args, with #() they could go anywhere - a consumer might want the seq, not applied
+</p><p class="code"><a name="19:56g">19:56</a> <b>Chousuke </b>,(#(apply + 1 %&amp;) 1 2 3 4)
+</p><p class="bot"><a name="19:56h">19:56</a> <b>clojurebot </b>11
+</p><p><a name="19:57">19:57</a> <b>ataggart </b>interesting
+</p><p class="code"><a name="19:57a">19:57</a> <b>rhickey_ </b>,(#(count %&amp;) 1 2 3)
+</p><p class="bot"><a name="19:57b">19:57</a> <b>clojurebot </b>3
+</p><p><a class="nh" name="20:38">20:38</a> <b>Chouser </b>oh, vars still have :line 0 in their metadata
+</p><p><a name="20:43">20:43</a> <b>slashus2 </b>Chouser: When do they have :line 0 in their metadata?
+</p><p class="code"><a name="20:43a">20:43</a> <b>Chouser </b>,(:line ^#'map)
+</p><p class="bot"><a name="20:43b">20:43</a> <b>clojurebot </b>1494
+</p><p><a name="20:44">20:44</a> <b>Chouser </b>hm.
+</p><p><a name="20:44a">20:44</a> <b>slashus2 </b>They seem to have the correct line when I tried it in some code.
+</p><p><a name="20:45">20:45</a> <b>Chouser </b>ah, I forgot my clojure working copy regressed.
 </p><p><a name="20:45a">20:45</a> svn 1382 is a-okay.
-</p><p><a name="20:45b">20:45</a> <b>slashus2: </b>Is that broken for 1.0?
-</p><p><a name="20:45c">20:45</a> <b>Chouser: </b>no
+</p><p><a name="20:45b">20:45</a> <b>slashus2 </b>Is that broken for 1.0?
+</p><p><a name="20:45c">20:45</a> <b>Chouser </b>no
 </p><p><a name="20:47">20:47</a> it was broken and fixed post-1.0
-</p><p><a class="nh" name="22:01">22:01</a> <b>jomofo: </b>In the API doc, add-watcher says that it's &quot;Experimental&quot;.  I think it is a good solution for a small problem I'm trying to solve.  What are the risks of using an Experimental API in clojure?
-</p><p><a class="nh" name="22:07">22:07</a> <b>durka42: </b>watchers have been there for a while
+</p><p><a class="nh" name="22:01">22:01</a> <b>jomofo </b>In the API doc, add-watcher says that it's &quot;Experimental&quot;.  I think it is a good solution for a small problem I'm trying to solve.  What are the risks of using an Experimental API in clojure?
+</p><p><a class="nh" name="22:07">22:07</a> <b>durka42 </b>watchers have been there for a while
 </p><p><a name="22:07a">22:07</a> i think they should be fine
 </p><p><a name="22:07b">22:07</a> not sure if their implementation has changed recently
 </p><p><a name="22:07c">22:07</a> on the other hand, you have to be prepared for bugs since it is experimental
-</p><p><a name="22:12">22:12</a> <b>Chouser: </b>I think your greater risk is the api changing more than bugs.
-</p><p><a name="22:12a">22:12</a> <b>jomofo: </b>Ok, thanks.  I can deal with bugs and API changes, just wanted to make sure it wasn't more like &quot;don't use this at all right now&quot;
+</p><p><a name="22:12">22:12</a> <b>Chouser </b>I think your greater risk is the api changing more than bugs.
+</p><p><a name="22:12a">22:12</a> <b>jomofo </b>Ok, thanks.  I can deal with bugs and API changes, just wanted to make sure it wasn't more like &quot;don't use this at all right now&quot;
 </p><p><a class="nh" name="22:21">22:21</a> Just curious, why does add-watcher require send-type?
-</p><p><a name="22:22">22:22</a> <b>durka42: </b>i guess, so you can decide whether whoever calls the watcher needs to block
-</p><p><a name="22:22a">22:22</a> <b>jomofo: </b>Oh, wait... I think I get it
-</p><p><a name="22:22b">22:22</a> <b>durka42: </b>if you give :send for send-type, will the agent itself block?
+</p><p><a name="22:22">22:22</a> <b>durka42 </b>i guess, so you can decide whether whoever calls the watcher needs to block
+</p><p><a name="22:22a">22:22</a> <b>jomofo </b>Oh, wait... I think I get it
+</p><p><a name="22:22b">22:22</a> <b>durka42 </b>if you give :send for send-type, will the agent itself block?
 </p><p><a name="22:24">22:24</a> unrelated question: can you recur through lazy-seq?
-</p><p><a name="22:26">22:26</a> <b>jomofo: </b>durka42: Gotcha, when I first saw that I thought it referred to what triggered the state change on the 'observed' reference but I was clearly reading it wrong
-</p><p><a name="22:26a">22:26</a> <b>durka42: </b>oh dear, i seem to have crashed the JVM again
+</p><p><a name="22:26">22:26</a> <b>jomofo </b>durka42: Gotcha, when I first saw that I thought it referred to what triggered the state change on the 'observed' reference but I was clearly reading it wrong
+</p><p><a name="22:26a">22:26</a> <b>durka42 </b>oh dear, i seem to have crashed the JVM again
 </p><p><a class="nh" name="22:38">22:38</a> so is it true in general that if i have a bunch of functions that loop over a list doing something, and return a list, and then i convert them all to use lazy-seq and compose them all, then the list should be traversed only once?
-</p><p><a class="nh" name="22:47">22:47</a> <b>cmvkk: </b>in general, that sounds right.  every time you grab a new element, all of the composed functions run for just that element.
-</p><p><a name="22:49">22:49</a> <b>durka42: </b>cool
+</p><p><a class="nh" name="22:47">22:47</a> <b>cmvkk </b>in general, that sounds right.  every time you grab a new element, all of the composed functions run for just that element.
+</p><p><a name="22:49">22:49</a> <b>durka42 </b>cool
 </p><p><a name="22:50">22:50</a> will do some benchmarks when i finish lazifying the functions
-</p><p><a class="nh" name="23:09">23:09</a> <b>technomancy: </b>how do you control the amount of whitespace in the output of clojure.xml/emit?
+</p><p><a class="nh" name="23:09">23:09</a> <b>technomancy </b>how do you control the amount of whitespace in the output of clojure.xml/emit?
 </p><p><a name="23:09a">23:09</a> I've just been binding println to print, but that's lame. =)
-</p><p><a name="23:10">23:10</a> <b>durka42: </b>~def clojure.xml/exmit
+</p><p><a name="23:10">23:10</a> <b>durka42 </b>~def clojure.xml/exmit
 </p><p><a name="23:10a">23:10</a> whoops
 </p><p><a name="23:10b">23:10</a> ~def clojure.xml/emit
 </p><p><a name="23:11">23:11</a> it doesn't look like there is any other way, with that implementation
-</p><p><a name="23:12">23:12</a> <b>technomancy: </b>seems like quite an oversight.
+</p><p><a name="23:12">23:12</a> <b>technomancy </b>seems like quite an oversight.
 </p></div></div></div>
-<script type="text/javascript" src="/jquery-1.4.4.js"></script>
-<script type="text/javascript" src="/i2.js"></script>
+<script type="text/javascript" src="jquery-1.4.4.js"></script>
+<script type="text/javascript" src="i2.js"></script>
 </body></html>

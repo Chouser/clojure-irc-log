@@ -12,6 +12,9 @@ body {
   background: #fff;
   border: 1px #5881d8 solid;
   border-left: 36px #5881d8 solid;
+  -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
   height: 100%;
 }
 #frame.paged {

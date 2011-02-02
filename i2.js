@@ -1,3 +1,7 @@
+// clojure-irc-log/irc.js
+// Copyright 2010 Chris Houser
+// Please ask before using in other projects
+
 function resize() {
   // JavaScript is running, so convert page from vertical scrolling to
   // horizontal paging:
@@ -44,11 +48,44 @@ function resize() {
   });
 }
 
-function scrollBy(p) {
-  var width = window.col_width;
+window.scroll_anim = {
+  goal_page: 0,
+  velocity: 0,
+  prev_draw: null
+};
+
+function doanim() {
+  var anim = window.scroll_anim;
   var frame = $('#frame')[0];
-  var page_count = Math.ceil(window.doc_width / width);
-  frame.scrollLeft = Math.min(page_count-2, (Math.floor(frame.scrollLeft / width) + p)) * width;
+  var goal_px = anim.goal_page * window.col_width;
+  var diff = goal_px - frame.scrollLeft;
+  var pull_force = (diff == 0 ? 20 :
+                     (diff * diff * 0.008 + 20) * (diff / Math.abs(diff)));
+  var velocity = anim.velocity * 0.65 + pull_force;  // friction
+  if(Math.abs(velocity) < 20 && Math.abs(diff) < 2) {
+    frame.scrollLeft = goal_px;
+    velocity = 0;
+    anim.prev_draw = null;
+  }
+  else {
+    var now = new Date();
+    var elapsed = anim.prevdraw ? (now - anim.prev_draw) : 30;
+    frame.scrollLeft += velocity * elapsed * 0.001;  // velocity factor
+    anim.prev_draw = now;
+    setTimeout(doanim, 20);
+  }
+  anim.velocity = velocity;
+}
+
+function scrollBy(p) {
+  var anim = window.scroll_anim;
+  var old_goal_page = anim.goal_page;
+  var page_count = Math.ceil(window.doc_width / window.col_width);
+  anim.goal_page = Math.max(Math.min(old_goal_page + p, page_count-2), 0);
+  if(anim.velocity == 0 && anim.goal_page != old_goal_page) {
+    // not scrolling, so kick off a animation loop
+    doanim();
+  }
 }
 
 $(document).keydown(function(e) {

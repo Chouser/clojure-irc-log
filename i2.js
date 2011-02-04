@@ -62,6 +62,7 @@ function doanim() {
   var pull_force = (diff == 0 ? 20 :
                      (diff * diff * 0.02 + 20) * (diff / Math.abs(diff)));
   var velocity = anim.velocity * 0.5 + pull_force;  // friction
+  anim.our_scroll = true;
   if(Math.abs(velocity) < 20 && Math.abs(diff) < 2) {
     frame.scrollLeft = goal_px;
     velocity = 0;
@@ -70,8 +71,8 @@ function doanim() {
   else {
     var now = new Date();
     var elapsed = anim.prevdraw ? (now - anim.prev_draw) : 30;
-    frame.scrollLeft += velocity * elapsed * 0.001;  // velocity factor
     anim.prev_draw = now;
+    frame.scrollLeft += velocity * elapsed * 0.001;  // velocity factor
     setTimeout(doanim, 20);
   }
   anim.velocity = velocity;
@@ -81,7 +82,8 @@ function scrollBy(p) {
   var anim = window.scroll_anim;
   var old_goal_page = anim.goal_page;
   var page_count = Math.ceil(window.doc_width / window.col_width);
-  anim.goal_page = Math.max(Math.min(old_goal_page + p, page_count-2), 0);
+  anim.goal_page = Math.max(0, Math.min(Math.round(old_goal_page + p * 0.6),
+                                        page_count-2));
   if(anim.velocity == 0 && anim.goal_page != old_goal_page) {
     // not scrolling, so kick off a animation loop
     doanim();
@@ -89,11 +91,20 @@ function scrollBy(p) {
 }
 
 $(document).keydown(function(e) {
-  if(e.which == 39 || e.which == 32 || e.which == 34 || e.which == 40) {
-    scrollBy(1);
+  var p = ({
+    39:  1, 32:  1, 34:  1, 40:  1,
+    37: -1, 33: -1, 38: -1
+  })[e.which];
+  if(p) scrollBy(p);
+});
+
+$('#frame').scroll(function(e) {
+  var anim = window.scroll_anim;
+  if(!anim.our_scroll) {
+    anim.goal_page = $('#frame')[0].scrollLeft / window.col_width;
   }
-  if(e.which == 37 || e.which == 33 || e.which == 38) {
-    scrollBy(-1);
+  else {
+    anim.our_scroll = false;
   }
 });
 

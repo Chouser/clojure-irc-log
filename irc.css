@@ -27,11 +27,15 @@ body {
 #columns.paged {
   -webkit-column-width: 34em;
   -moz-column-width: 34em;
+  -webkit-column-rule: 1px #ccc solid;
+  -moz-column-rule: 1px #ccc solid;
 }
 
 header, footer {
   -webkit-column-width: 34em;
   -moz-column-width: 34em;
+  -webkit-column-rule: 1px #ccc solid;
+  -moz-column-rule: 1px #ccc solid;
   margin: 0 0.5em;
 }
 .page_head, .page_foot {
@@ -126,9 +130,8 @@ em {
   font-size: 8pt;
   font-style: normal;
 }
-a { color: #aaa; visibility: hidden; text-decoration: none; }
-p:hover a { visibility: visible; }
-a.nh { color: #999; visibility: visible; }
+a { color: #999; visibility: hidden; text-decoration: none; }
+p:hover a, a.nh { visibility: visible; }
 a:target { color: #000; visibility: visible; }
 p.bdfl b { color: #c00; }
 

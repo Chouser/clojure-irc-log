@@ -1,5 +1,5 @@
 // clojure-irc-log/irc.js
-// Copyright 2010 Chris Houser
+// Copyright 2010 Chris Houser, all rights reserved
 // Please ask before using in other projects
 
 function resize() {
@@ -13,12 +13,15 @@ function resize() {
   // size so the page_count can be calculated correctly
   $('#columns').before('<header><table class="page_head"><tr><td class="page_head_left"></td><td class="page_head_right"></td></tr></table></header>');
   $('.page_head_left' ).append($('h1').contents().clone());
-  $('.page_head_right').append($('h2').contents().clone());
+  var the_date = $('h2').contents().clone();
+  $('.page_head_right').append(the_date);
+  the_date.wrap('<button onclick="date_click(this)"/>');
+  the_date.before('<span class="cal_btn">►</span> ');
   $('h1').css('margin-top', 0);
   var page_head = $('.page_head').clone();
-  $('.page_head').css('visibility', 'hidden');
 
-  $('#columns').after('<footer><table class="page_foot"><tr><td class="page_foot_left"><button onclick="scrollBy(-1)">&lt;&lt;&lt;</button></td><td class="page_foot_mid"></td><td class="page_foot_right"><button onclick="scrollBy(1)">&gt;&gt;&gt;</button></td></tr></table></footer>');
+  // XXX: change the div below to a button for jumping to other pages
+  $('#columns').after('<footer><table class="page_foot"><tr><td class="page_foot_left"><button onclick="scrollBy(-1)">&lt;&lt;&lt;</button></td><td><center><div class="page_foot_mid"></div></td><td class="page_foot_right"><button onclick="scrollBy(1)">&gt;&gt;&gt;</button></td></tr></table></footer>');
   var page_foot = $('.page_foot');
   $('header').height($('header').outerHeight());
   $('#columns').height(
@@ -107,6 +110,51 @@ $('#frame').scroll(function(e) {
     anim.our_scroll = false;
   }
 });
+
+var first_date_click = true;
+var date_open = false;
+function date_click(obj) {
+  if(first_date_click) {
+    $(document.body).append(
+     '<script id="more_ui" src="jquery-ui-1.8.9.custom.min.js"></script>'+
+     '<link type="text/css" href="jquery.ui.core.css" rel="stylesheet" />'+
+     '<link type="text/css" href="jquery.ui.datepicker.css" rel="stylesheet"/>'+
+     '<link type="text/css" href="jquery.ui.theme.css" rel="stylesheet" />');
+    first_date_click = false;
+    $.get('/date/', null, function(data, status) {
+      var datehash = {};
+      var mindate = null;
+      var maxdate = null;
+      data.replace( /(\d\d\d\d-\d\d-\d\d)\.html/g, function(s,d) {
+        var date = new Date(d);
+        mindate = date < mindate || !mindate ? date : mindate;
+        maxdate = date > maxdate || !maxdate ? date : maxdate;
+        datehash[new Date(d)] = {url: s};
+      });
+
+      // XXX What if the ui script hasn't finished loading yet?
+      $('#frame').append('<div class="date_picker"/>');
+      $('.date_picker').datepicker({
+        changeYear: true,
+        defaultDate: new Date(obj.textContent),
+        minDate: mindate,
+        maxDate: maxdate,
+        beforeShowDay: function(date) { return [datehash[date]]; },
+        onSelect: function(dateText) {
+          document.location = '/date/' + datehash[new Date(dateText)].url;
+        }
+      });
+    });
+  }
+  if(date_open) {
+    $(document.body).removeClass('date_open');
+    date_open = false;
+  }
+  else {
+    $(document.body).addClass('date_open');
+    date_open = true;
+  }
+};
 
 $(document).ready(resize);
 //$(document).resize(resize);

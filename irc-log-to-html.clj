@@ -39,9 +39,11 @@
         linked  (str/replace escaped link-re
                              (fn [url]
                                (let [urltext (reduce #(str %1 "<wbr />" %2)
-                                                     (re-seq wrap-re url))]
-                                 (xhtml [:a {:href url :class "nm"}
-                                         urltext]))))]
+                                                     (re-seq wrap-re url))
+                                     linktext (xhtml [:a {:href url
+                                                          :class "nm"}
+                                                          urltext])]
+                                (str/replace linktext "$" "\\$"))))]
     (str linked "\n")))
 
 (defn #^String html-header [date]
@@ -161,7 +163,7 @@
                                                (update-html log-dir html-dir)))]
     (sh "ln" "-sf" latest link-name)
     (println (sh "rsync" "-ua" "--files-from=-" "." rsync-target
-        :in (str/join "\n" (cons link-name html-files))))))
+                 :in (str/join "\n" (cons link-name html-files))))))
 
 (update-remote-html
   (File. "/home/chouser/commlog/irssi/clojure")

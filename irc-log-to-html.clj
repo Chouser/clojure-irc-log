@@ -168,5 +168,5 @@
 (update-remote-html
   (File. "/home/chouser/commlog/irssi/clojure")
   (File. "date") "index.html"
-  "n01se.net:clojure-log.n01se.net/")
+  "clojurelog@n01se.net:clojure-log.n01se.net/")
 (shutdown-agents)
